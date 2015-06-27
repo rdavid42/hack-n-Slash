@@ -16,6 +16,8 @@ public class player : MonoBehaviour
 	public bool						canAttack;
 	public bool						attacking;
 	public UI						ui;
+	public itemGenerator			itemgen;
+	public inventory				inv;
 
 	private RaycastHit[]			_hits;
 	private Vector3					_camOffset;
@@ -191,6 +193,8 @@ public class player : MonoBehaviour
 			if (st.hp <= 0)
 				StartCoroutine(Die());
 			cam.transform.position = transform.position - _camOffset;
+			if (Input.GetKeyDown(KeyCode.G))
+				itemgen.tryGenerateItem(transform.position, st.level, true);
 		}
 	}
 }
