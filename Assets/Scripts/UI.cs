@@ -41,6 +41,9 @@ public class UI : MonoBehaviour {
 	// death panel
 	public GameObject				deadPanel;
 
+	// inventory panel
+	public GameObject				inventory;
+
 	void Start()
 	{
 		overButton = false;
@@ -82,25 +85,25 @@ public class UI : MonoBehaviour {
 			deadPanel.SetActive(false);
 	}
 	
-	public void disableStatPanel()
+	public void disablePanel(GameObject panel)
 	{
-		if (statPanel.activeSelf)
-			statPanel.SetActive(false);
+		if (panel.activeSelf)
+			panel.SetActive(false);
 		overButton = false;
 	}
 	
-	public void enableStatPanel()
+	public void enablePanel(GameObject panel)
 	{
-		if (!statPanel.activeSelf)
-			statPanel.SetActive(true);
+		if (!panel.activeSelf)
+			panel.SetActive(true);
 	}
 
-	public void switchStatPanel()
+	public void switchPanel(GameObject panel)
 	{
-		if (statPanel.activeSelf)
-			disableStatPanel();
+		if (panel.activeSelf)
+			disablePanel(panel);
 		else
-			enableStatPanel();
+			enablePanel(panel);
 	}
 
 	public void upStrClick()
@@ -180,5 +183,9 @@ public class UI : MonoBehaviour {
 	{
 		printMainPanel();
 		printStatPanel();
+		if (Input.GetKeyDown(KeyCode.C))
+			switchPanel(statPanel);
+		if (Input.GetKeyDown(KeyCode.I))
+			switchPanel(inventory);
 	}
 }

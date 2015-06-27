@@ -175,8 +175,6 @@ public class maya : MonoBehaviour
 			getEnemyInfo(_hits);
 			if (nma.remainingDistance < 1.0f)
 				stop();
-			if (Input.GetKeyDown(KeyCode.C))
-				ui.switchStatPanel();
 			levelUpCheck();
 			if (Input.GetMouseButton(0))
 			{
