@@ -22,12 +22,15 @@ public class player : MonoBehaviour
 	private RaycastHit[]			_hits;
 	private Vector3					_camOffset;
 
+	private GameObject				_target;
+
 	void Start()
 	{
 		_camOffset = transform.position - cam.transform.position;
 		canLevelUp = false;
 		attacking = false;
 		canAttack = false;
+		_target = null;
 		moveAnim(false);
 	}
 
@@ -105,16 +108,14 @@ public class player : MonoBehaviour
 	{
 		if (c.gameObject.tag == "enemyTrigger")
 			canAttack = true;
+		if (Input.GetMouseButton(0) && c.gameObject == _target)
+			attack(_target.transform.position);
 	}
 	
 	void OnTriggerExit(Collider c)
 	{
 		if (c.gameObject.tag == "enemyTrigger")
-		{
-			canAttack = false;
-			attacking = false;
-			attackAnim1(false);
-		}
+			stopAttack();
 	}
 
 	void moveAnim(bool state)
@@ -127,22 +128,43 @@ public class player : MonoBehaviour
 		anim.SetBool("attack", state);
 	}
 
+	void attack(Vector3 pos)
+	{
+		transform.LookAt(pos);
+		attacking = true;
+		moveAnim(false);
+		attackAnim1(true);
+	}
+
+	void stopAttack()
+	{
+		canAttack = false;
+		attacking = false;
+		attackAnim1(false);
+	}
+
 	bool tryAttack(RaycastHit[] hits)
 	{
 		foreach (RaycastHit hit in hits)
 		{
 			if (canAttack && (hit.collider.gameObject.tag == "enemy"))
 			{
-				Vector3 t = hit.collider.gameObject.transform.position;
-				transform.LookAt(t);
-				attacking = true;
-				moveAnim(false);
-				attackAnim1(true);
+				attack(hit.collider.gameObject.transform.position);
 				return (true);
 			}
 		}
 		attacking = false;
 		attackAnim1(false);
+		return (false);
+	}
+
+	bool tryPickUp(RaycastHit[] hits)
+	{
+		foreach (RaycastHit hit in hits)
+		{
+			if (hit.collider.gameObject.tag == "item")
+				return (true);
+		}
 		return (false);
 	}
 
@@ -166,7 +188,7 @@ public class player : MonoBehaviour
 		dead = true;
 		st.hp = 0;
 		moveAnim(false);
-		attackAnim1(false);
+		stopAttack();
 		anim.SetBool("die", true);
 		ui.enableDeathPanel();
 		yield return new WaitForSeconds(3.0f);
@@ -185,11 +207,16 @@ public class player : MonoBehaviour
 			levelUpCheck();
 			if (Input.GetMouseButton(0))
 			{
+				tryPickUp(_hits);
 				if (!tryAttack(_hits))
 					tryMove(_hits);
 			}
 			else
 				attackAnim1(false);
+			if (Input.GetMouseButtonUp(0))
+			{
+				attacking = false;
+			}
 			if (st.hp <= 0)
 				StartCoroutine(Die());
 			cam.transform.position = transform.position - _camOffset;

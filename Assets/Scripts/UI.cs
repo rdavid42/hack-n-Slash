@@ -179,11 +179,6 @@ public class UI : MonoBehaviour {
 		}
 	}
 
-	public void printInventory()
-	{
-
-	}
-
 	void Update()
 	{
 		printMainPanel();
