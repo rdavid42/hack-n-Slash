@@ -14,7 +14,7 @@ public class enemyAttack : MonoBehaviour {
 	{
 		if (!e.dead)
 		{
-			if (c.gameObject.tag == "maya")
+			if (c.gameObject.tag == "player")
 				e.attack(c.gameObject);
 		}
 	}
@@ -23,7 +23,7 @@ public class enemyAttack : MonoBehaviour {
 	{
 		if (!e.dead)
 		{
-			if (c.gameObject.tag == "maya")
+			if (c.gameObject.tag == "player")
 				e.stopAttacking();
 		}
 	}

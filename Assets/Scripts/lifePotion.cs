@@ -10,9 +10,9 @@ public class lifePotion : MonoBehaviour {
 
 	void OnTriggerEnter(Collider c)
 	{
-		if (c.gameObject.tag == "maya")
+		if (c.gameObject.tag == "player")
 		{
-			maya m = c.gameObject.GetComponent<maya>();
+			player m = c.gameObject.GetComponent<player>();
 			m.st.hp += (int)((float)m.st.maxHp * 30.0f / 100.0f);
 			if (m.st.hp > m.st.maxHp)
 				m.st.hp = m.st.maxHp;

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class UI : MonoBehaviour {
 
-	public maya						player;
+	public player					player;
 	public bool						overButton;
 
 	// main screen
@@ -176,6 +176,16 @@ public class UI : MonoBehaviour {
 				levelUpButton.SetActive(false);
 				player.upgradePoints = 0;
 			}
+		}
+	}
+
+	public void printInventory()
+	{
+		int i, j;
+
+		for (i = 0; i < player.inv.width; i++)
+		{
+
 		}
 	}
 
