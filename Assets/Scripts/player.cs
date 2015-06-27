@@ -29,7 +29,6 @@ public class player : MonoBehaviour
 		attacking = false;
 		canAttack = false;
 		moveAnim(false);
-		inv.addItem(itemgen.tryGenerateItem(transform.position, 1, true));
 	}
 
 	void levelUpCheck()
@@ -91,7 +90,7 @@ public class player : MonoBehaviour
 	{
 		foreach (RaycastHit hit in hits)
 		{
-			if (hit.collider.gameObject.tag == "zombieTrigger" && !ui.overButton)
+			if (hit.collider.gameObject.tag == "enemyTrigger" && !ui.overButton)
 			{
 				enemy e = hit.collider.gameObject.GetComponentInParent<enemy>();
 				ui.enableEnemyPanel();
@@ -104,13 +103,13 @@ public class player : MonoBehaviour
 
 	void OnTriggerEnter(Collider c)
 	{
-		if (c.gameObject.tag == "zombieTrigger" || c.gameObject.tag == "zombie")
+		if (c.gameObject.tag == "enemyTrigger")
 			canAttack = true;
 	}
 	
 	void OnTriggerExit(Collider c)
 	{
-		if (c.gameObject.tag == "zombieTrigger" || c.gameObject.tag == "zombie")
+		if (c.gameObject.tag == "enemyTrigger")
 		{
 			canAttack = false;
 			attacking = false;
@@ -132,7 +131,7 @@ public class player : MonoBehaviour
 	{
 		foreach (RaycastHit hit in hits)
 		{
-			if (canAttack && (hit.collider.gameObject.tag == "zombieTrigger"))
+			if (canAttack && (hit.collider.gameObject.tag == "enemy"))
 			{
 				Vector3 t = hit.collider.gameObject.transform.position;
 				transform.LookAt(t);
