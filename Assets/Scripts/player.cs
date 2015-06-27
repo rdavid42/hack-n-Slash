@@ -203,12 +203,17 @@ public class player : MonoBehaviour
 			levelUpCheck();
 			if (Input.GetMouseButton(0))
 			{
-				Debug.Log(_target);
-				if (!attacking && _target != null)
+				if (_target != null)
 				{
-					Debug.Log("Following target");
-					moveAnim(true);
-					nma.destination = _target.transform.position;
+					if (canAttack)
+					{
+						attack(_target.transform.position);
+					}
+					else
+					{
+						moveAnim(true);
+						nma.destination = _target.transform.position;
+					}
 				}
 				else
 				{
@@ -217,8 +222,6 @@ public class player : MonoBehaviour
 						tryMove(_hits);
 				}
 			}
-			else
-				attackAnim1(false);
 			if (Input.GetMouseButtonUp(0))
 				stopAttack();
 			if (st.hp <= 0)
