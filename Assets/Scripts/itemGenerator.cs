@@ -17,6 +17,7 @@ public class itemGenerator : MonoBehaviour
 		foreach (Transform child in transform)
 		{
 			items[i] = child.gameObject;
+			items[i].GetComponent<itemStats>().id = i;
 			i++;
 		}
 	}

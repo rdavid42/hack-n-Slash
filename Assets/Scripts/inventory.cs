@@ -5,7 +5,7 @@ public class inventory : MonoBehaviour
 {
 	public GameObject			grid;
 	public int					size;
-	public GameObject[]			slots;
+	public GameObject[]			items;
 	public GameObject			rightHand;
 	public GameObject			leftHand;
 
@@ -17,10 +17,10 @@ public class inventory : MonoBehaviour
 		int i;
 
 		size = 18;
-		slots = new GameObject[size];
+		items = new GameObject[size];
 		for (i = 0; i < size; ++i)
 		{
-			slots[i] = null;
+			items[i] = null;
 		}
 	}
 
@@ -30,12 +30,12 @@ public class inventory : MonoBehaviour
 
 		for (i = 0; i < size; i++)
 		{
-			if (slots[i] != null)
+			if (items[i] != null)
 			{
 				Destroy(item.GetComponent<Rigidbody>());
 				item.GetComponent<MeshCollider>().enabled = false;
-				item.transform.parent = slots[i].transform;
 				item.SetActive(false);
+				items[i] = item;
 			}
 		}
 	}
