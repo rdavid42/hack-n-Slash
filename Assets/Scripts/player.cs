@@ -122,11 +122,8 @@ public class player : MonoBehaviour
 	{
 		if (c.gameObject.tag == "enemyTrigger")
 			canAttack = true;
-		if (c.gameObject.tag == "item")
-		{
-			Debug.Log(c.gameObject);
+		if (c.gameObject.tag == "itemPickUp")
 			inv.addItem(c.gameObject);
-		}
 		if (Input.GetMouseButton(0) && c.gameObject == _target)
 			attack(_target.transform.position);
 	}
@@ -161,8 +158,9 @@ public class player : MonoBehaviour
 	{
 		foreach (RaycastHit hit in hits)
 		{
-			if (hit.collider.gameObject.tag == "item")
+			if (hit.collider.gameObject.tag == "itemPickUp")
 			{
+				Debug.Log(hit.collider.gameObject);
 				_pickUpTarget = hit.collider.gameObject;
 				return (true);
 			}
