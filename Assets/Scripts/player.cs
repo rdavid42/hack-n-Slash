@@ -23,6 +23,7 @@ public class player : MonoBehaviour
 	private Vector3					_camOffset;
 
 	private GameObject				_target;
+	private GameObject				_pickUpTarget;
 
 	void Start()
 	{
@@ -31,6 +32,7 @@ public class player : MonoBehaviour
 		attacking = false;
 		canAttack = false;
 		_target = null;
+		_pickUpTarget = null;
 		moveAnim(false);
 	}
 
@@ -120,6 +122,11 @@ public class player : MonoBehaviour
 	{
 		if (c.gameObject.tag == "enemyTrigger")
 			canAttack = true;
+		if (c.gameObject.tag == "item")
+		{
+			Debug.Log(c.gameObject);
+			inv.addItem(c.gameObject);
+		}
 		if (Input.GetMouseButton(0) && c.gameObject == _target)
 			attack(_target.transform.position);
 	}
@@ -155,7 +162,10 @@ public class player : MonoBehaviour
 		foreach (RaycastHit hit in hits)
 		{
 			if (hit.collider.gameObject.tag == "item")
+			{
+				_pickUpTarget = hit.collider.gameObject;
 				return (true);
+			}
 		}
 		return (false);
 	}
@@ -206,9 +216,7 @@ public class player : MonoBehaviour
 				if (_target != null)
 				{
 					if (canAttack)
-					{
 						attack(_target.transform.position);
-					}
 					else
 					{
 						moveAnim(true);
