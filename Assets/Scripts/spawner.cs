@@ -8,7 +8,7 @@ public class spawner : MonoBehaviour {
 	public GameObject		currentZomb;
 	private enemy			currentZombScript;
 	public bool				canSpawn;
-	public maya				player;
+	public player			player;
 	public float			elapsedSpawnTime;
 	public float			elapsedUpdateTime;
 	public float			updateRate;

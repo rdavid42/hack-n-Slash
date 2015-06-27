@@ -14,7 +14,7 @@ public class enemyVision : MonoBehaviour {
 	{
 		if (!e.dead && !e.attacking)
 		{
-			if (c.gameObject.tag == "maya")
+			if (c.gameObject.tag == "player")
 			{
 				e.move(c.gameObject);
 			}

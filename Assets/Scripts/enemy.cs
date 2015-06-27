@@ -12,7 +12,7 @@ public class enemy : MonoBehaviour {
 	public AnimationState			animState;
 	public float					attackRate;
 	public float					elapsedAttackTime;
-	public maya						player;
+	public player					player;
 	public spawner					spawn;
 	public GameObject				lifePotion;
 

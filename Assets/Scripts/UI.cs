@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class UI : MonoBehaviour {
 
-	public maya						player;
+	public player					player;
 	public bool						overButton;
 
 	// main screen

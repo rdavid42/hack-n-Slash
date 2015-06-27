@@ -3,7 +3,7 @@ using System.Collections;
 
 public class swordAttack : MonoBehaviour {
 
-	public maya				player;
+	public player			player;
 
 	// Use this for initialization
 	void Start () {
