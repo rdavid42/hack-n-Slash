@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class swordAttack : MonoBehaviour {
+public class meleeAttack : MonoBehaviour {
 
 	public player			player;
 

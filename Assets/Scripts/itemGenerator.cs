@@ -1,0 +1,47 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class itemGenerator : MonoBehaviour
+{
+	public int					itemCount;
+	public player				player;
+	public GameObject[]			items;
+
+	// Use this for initialization
+	void Start()
+	{
+		int		i;
+
+		items = new GameObject[itemCount];
+		i = 0;
+		foreach (Transform child in transform)
+		{
+			items[i] = child.gameObject;
+			i++;
+		}
+	}
+
+	public GameObject tryGenerateItem(enemy e)
+	{
+		if (Random.Range(0, 3) == 0)
+		{
+			int id = Random.Range(0, items.Length - 1);
+			GameObject go = items[id];
+			itemStats ist = go.GetComponent<itemStats>();
+			int ilvl = e.st.level + Random.Range(-2, 3);
+			if (ilvl < 1)
+				ilvl = 1;
+			ist.generate(ilvl);
+			Vector3 p = e.gameObject.transform.position;
+			p.y += 1.0f;
+			GameObject igo = (GameObject)Instantiate(go, p, Quaternion.Euler(0.0f, 0.0f, (float)Random.Range(0, 360)));
+ 		}
+		return (null);
+	}
+
+	// Update is called once per frame
+	void Update()
+	{
+	
+	}
+}

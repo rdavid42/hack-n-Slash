@@ -26,6 +26,7 @@ public class player : MonoBehaviour
 		canLevelUp = false;
 		attacking = false;
 		canAttack = false;
+		moveAnim(false);
 	}
 
 	void levelUpCheck()
@@ -79,7 +80,7 @@ public class player : MonoBehaviour
 
 	public void stop()
 	{
-		anim.SetBool("run", false);
+		moveAnim(false);
 		nma.ResetPath();
 	}
 
@@ -110,9 +111,18 @@ public class player : MonoBehaviour
 		{
 			canAttack = false;
 			attacking = false;
-			if (anim.GetBool("attack"))
-				anim.SetBool("attack", true);
+			attackAnim1(false);
 		}
+	}
+
+	void moveAnim(bool state)
+	{
+		anim.SetBool("run", state);
+	}
+
+	void attackAnim1(bool state)
+	{
+		anim.SetBool("attack", state);
 	}
 
 	bool tryAttack(RaycastHit[] hits)
@@ -124,15 +134,13 @@ public class player : MonoBehaviour
 				Vector3 t = hit.collider.gameObject.transform.position;
 				transform.LookAt(t);
 				attacking = true;
-				if (anim.GetBool("run"))
-					anim.SetBool("run", false);
-				anim.SetBool("attack", true);
+				moveAnim(false);
+				attackAnim1(true);
 				return (true);
 			}
 		}
 		attacking = false;
-		if (anim.GetBool("attack"))
-			anim.SetBool("attack", false);
+		attackAnim1(false);
 		return (false);
 	}
 
@@ -142,9 +150,8 @@ public class player : MonoBehaviour
 		{
 			if (hit.collider.gameObject.tag == "terrain" && !ui.overButton)
 			{
-				if (anim.GetBool("attack"))
-					anim.SetBool("attack", false);
-				anim.SetBool("run", true);
+				attackAnim1(false);
+				moveAnim(true);
 				nma.destination = hit.point;
 				return (true);
 			}
@@ -156,10 +163,8 @@ public class player : MonoBehaviour
 	{
 		dead = true;
 		st.hp = 0;
-		if (anim.GetBool("run"))
-			anim.SetBool("run", false);
-		if (anim.GetBool("attack"))
-			anim.SetBool("attack", false);
+		moveAnim(false);
+		attackAnim1(false);
 		anim.SetBool("die", true);
 		ui.enableDeathPanel();
 		yield return new WaitForSeconds(3.0f);
@@ -182,7 +187,7 @@ public class player : MonoBehaviour
 					tryMove(_hits);
 			}
 			else
-				anim.SetBool("attack", false);
+				attackAnim1(false);
 			if (st.hp <= 0)
 				StartCoroutine(Die());
 			cam.transform.position = transform.position - _camOffset;
