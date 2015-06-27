@@ -11,7 +11,6 @@ public class itemStats : MonoBehaviour
 	public string			name;
 	// generator
 	public int				ilvl;
-	public int				id;
 	// here
 	public int				qualitybonusDmg;
 	public int				finalMinDmg;

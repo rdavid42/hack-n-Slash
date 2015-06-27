@@ -29,6 +29,7 @@ public class player : MonoBehaviour
 		attacking = false;
 		canAttack = false;
 		moveAnim(false);
+		inv.addItem(itemgen.tryGenerateItem(transform.position, 1, true));
 	}
 
 	void levelUpCheck()

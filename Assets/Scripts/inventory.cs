@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class inventory : MonoBehaviour
 {
 	public GameObject			grid;
+	public GameObject[]			slots;
 	public int					size;
 	public GameObject[]			items;
 	public GameObject			rightHand;
@@ -19,8 +21,13 @@ public class inventory : MonoBehaviour
 		size = 18;
 		items = new GameObject[size];
 		for (i = 0; i < size; ++i)
-		{
 			items[i] = null;
+		slots = new GameObject[size];
+		i = 0;
+		foreach (Transform child in grid.transform)
+		{
+			slots[i] = child.gameObject;
+			i++;
 		}
 	}
 
@@ -30,12 +37,16 @@ public class inventory : MonoBehaviour
 
 		for (i = 0; i < size; i++)
 		{
-			if (items[i] != null)
+			if (items[i] == null)
 			{
 				Destroy(item.GetComponent<Rigidbody>());
 				item.GetComponent<MeshCollider>().enabled = false;
-				item.SetActive(false);
+				Image img = slots[i].transform.GetChild(0).GetComponent<Image>();
+				img.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+				img.sprite = item.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite;
 				items[i] = item;
+				item.SetActive(false);
+				break;
 			}
 		}
 	}
