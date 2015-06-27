@@ -103,19 +103,25 @@ public class player : MonoBehaviour
 		}
 		ui.disableEnemyPanel();
 	}
+	
+	IEnumerator Die()
+	{
+		dead = true;
+		st.hp = 0;
+		moveAnim(false);
+		stopAttack();
+		anim.SetBool("die", true);
+		ui.enableDeathPanel();
+		yield return new WaitForSeconds(3.0f);
+		Application.LoadLevel(Application.loadedLevel);
+	}
 
-	void OnTriggerEnter(Collider c)
+	void OnTriggerStay(Collider c)
 	{
 		if (c.gameObject.tag == "enemyTrigger")
 			canAttack = true;
 		if (Input.GetMouseButton(0) && c.gameObject == _target)
 			attack(_target.transform.position);
-	}
-	
-	void OnTriggerExit(Collider c)
-	{
-		if (c.gameObject.tag == "enemyTrigger")
-			stopAttack();
 	}
 
 	void moveAnim(bool state)
@@ -138,24 +144,10 @@ public class player : MonoBehaviour
 
 	void stopAttack()
 	{
+		_target = null;
 		canAttack = false;
 		attacking = false;
 		attackAnim1(false);
-	}
-
-	bool tryAttack(RaycastHit[] hits)
-	{
-		foreach (RaycastHit hit in hits)
-		{
-			if (canAttack && (hit.collider.gameObject.tag == "enemy"))
-			{
-				attack(hit.collider.gameObject.transform.position);
-				return (true);
-			}
-		}
-		attacking = false;
-		attackAnim1(false);
-		return (false);
 	}
 
 	bool tryPickUp(RaycastHit[] hits)
@@ -174,7 +166,7 @@ public class player : MonoBehaviour
 		{
 			if (hit.collider.gameObject.tag == "terrain" && !ui.overButton)
 			{
-				attackAnim1(false);
+				stopAttack();
 				moveAnim(true);
 				nma.destination = hit.point;
 				return (true);
@@ -182,20 +174,24 @@ public class player : MonoBehaviour
 		}
 		return (false);
 	}
-
-	IEnumerator Die()
+	
+	bool tryAttack(RaycastHit[] hits)
 	{
-		dead = true;
-		st.hp = 0;
-		moveAnim(false);
-		stopAttack();
-		anim.SetBool("die", true);
-		ui.enableDeathPanel();
-		yield return new WaitForSeconds(3.0f);
-		Application.LoadLevel(Application.loadedLevel);
+		foreach (RaycastHit hit in hits)
+		{
+			if (hit.collider.gameObject.tag == "enemyTrigger")
+			{
+				_target = hit.collider.gameObject;
+				if (canAttack)
+					attack(hit.collider.gameObject.transform.position);
+				return (true);
+			}
+		}
+		attacking = false;
+		attackAnim1(false);
+		return (false);
 	}
 
-	
 	void Update ()
 	{
 		if (!dead)
@@ -207,16 +203,24 @@ public class player : MonoBehaviour
 			levelUpCheck();
 			if (Input.GetMouseButton(0))
 			{
-				tryPickUp(_hits);
-				if (!tryAttack(_hits))
-					tryMove(_hits);
+				Debug.Log(_target);
+				if (!attacking && _target != null)
+				{
+					Debug.Log("Following target");
+					moveAnim(true);
+					nma.destination = _target.transform.position;
+				}
+				else
+				{
+					tryPickUp(_hits);
+					if (!tryAttack(_hits))
+						tryMove(_hits);
+				}
 			}
 			else
 				attackAnim1(false);
 			if (Input.GetMouseButtonUp(0))
-			{
-				attacking = false;
-			}
+				stopAttack();
 			if (st.hp <= 0)
 				StartCoroutine(Die());
 			cam.transform.position = transform.position - _camOffset;
