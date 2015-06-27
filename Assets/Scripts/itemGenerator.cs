@@ -36,6 +36,7 @@ public class itemGenerator : MonoBehaviour
 			p.y += 1.0f;
 			GameObject igo = (GameObject)Instantiate(go, p, Quaternion.Euler(0.0f, 0.0f, (float)Random.Range(0, 360)));
 			igo.SetActive(true);
+			return (igo);
  		}
 		return (null);
 	}

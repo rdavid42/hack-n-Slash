@@ -179,7 +179,6 @@ public class UI : MonoBehaviour {
 		}
 	}
 
-
 	void Update()
 	{
 		printMainPanel();

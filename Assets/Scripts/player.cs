@@ -22,12 +22,17 @@ public class player : MonoBehaviour
 	private RaycastHit[]			_hits;
 	private Vector3					_camOffset;
 
+	private GameObject				_target;
+	private GameObject				_pickUpTarget;
+
 	void Start()
 	{
 		_camOffset = transform.position - cam.transform.position;
 		canLevelUp = false;
 		attacking = false;
 		canAttack = false;
+		_target = null;
+		_pickUpTarget = null;
 		moveAnim(false);
 	}
 
@@ -90,7 +95,7 @@ public class player : MonoBehaviour
 	{
 		foreach (RaycastHit hit in hits)
 		{
-			if (hit.collider.gameObject.tag == "zombieTrigger" && !ui.overButton)
+			if (hit.collider.gameObject.tag == "enemyTrigger" && !ui.overButton)
 			{
 				enemy e = hit.collider.gameObject.GetComponentInParent<enemy>();
 				ui.enableEnemyPanel();
@@ -100,21 +105,30 @@ public class player : MonoBehaviour
 		}
 		ui.disableEnemyPanel();
 	}
-
-	void OnTriggerEnter(Collider c)
-	{
-		if (c.gameObject.tag == "zombieTrigger" || c.gameObject.tag == "zombie")
-			canAttack = true;
-	}
 	
-	void OnTriggerExit(Collider c)
+	IEnumerator Die()
 	{
-		if (c.gameObject.tag == "zombieTrigger" || c.gameObject.tag == "zombie")
+		dead = true;
+		st.hp = 0;
+		moveAnim(false);
+		stopAttack();
+		anim.SetBool("die", true);
+		ui.enableDeathPanel();
+		yield return new WaitForSeconds(3.0f);
+		Application.LoadLevel(Application.loadedLevel);
+	}
+
+	void OnTriggerStay(Collider c)
+	{
+		if (c.gameObject.tag == "enemyTrigger")
+			canAttack = true;
+		if (c.gameObject.tag == "item")
 		{
-			canAttack = false;
-			attacking = false;
-			attackAnim1(false);
+			Debug.Log(c.gameObject);
+			inv.addItem(c.gameObject);
 		}
+		if (Input.GetMouseButton(0) && c.gameObject == _target)
+			attack(_target.transform.position);
 	}
 
 	void moveAnim(bool state)
@@ -127,22 +141,32 @@ public class player : MonoBehaviour
 		anim.SetBool("attack", state);
 	}
 
-	bool tryAttack(RaycastHit[] hits)
+	void attack(Vector3 pos)
+	{
+		transform.LookAt(pos);
+		attacking = true;
+		moveAnim(false);
+		attackAnim1(true);
+	}
+
+	void stopAttack()
+	{
+		_target = null;
+		canAttack = false;
+		attacking = false;
+		attackAnim1(false);
+	}
+
+	bool tryPickUp(RaycastHit[] hits)
 	{
 		foreach (RaycastHit hit in hits)
 		{
-			if (canAttack && (hit.collider.gameObject.tag == "zombieTrigger"))
+			if (hit.collider.gameObject.tag == "item")
 			{
-				Vector3 t = hit.collider.gameObject.transform.position;
-				transform.LookAt(t);
-				attacking = true;
-				moveAnim(false);
-				attackAnim1(true);
+				_pickUpTarget = hit.collider.gameObject;
 				return (true);
 			}
 		}
-		attacking = false;
-		attackAnim1(false);
 		return (false);
 	}
 
@@ -152,7 +176,7 @@ public class player : MonoBehaviour
 		{
 			if (hit.collider.gameObject.tag == "terrain" && !ui.overButton)
 			{
-				attackAnim1(false);
+				stopAttack();
 				moveAnim(true);
 				nma.destination = hit.point;
 				return (true);
@@ -160,20 +184,24 @@ public class player : MonoBehaviour
 		}
 		return (false);
 	}
-
-	IEnumerator Die()
+	
+	bool tryAttack(RaycastHit[] hits)
 	{
-		dead = true;
-		st.hp = 0;
-		moveAnim(false);
+		foreach (RaycastHit hit in hits)
+		{
+			if (hit.collider.gameObject.tag == "enemyTrigger")
+			{
+				_target = hit.collider.gameObject;
+				if (canAttack)
+					attack(hit.collider.gameObject.transform.position);
+				return (true);
+			}
+		}
+		attacking = false;
 		attackAnim1(false);
-		anim.SetBool("die", true);
-		ui.enableDeathPanel();
-		yield return new WaitForSeconds(3.0f);
-		Application.LoadLevel(Application.loadedLevel);
+		return (false);
 	}
 
-	
 	void Update ()
 	{
 		if (!dead)
@@ -185,11 +213,25 @@ public class player : MonoBehaviour
 			levelUpCheck();
 			if (Input.GetMouseButton(0))
 			{
-				if (!tryAttack(_hits))
-					tryMove(_hits);
+				if (_target != null)
+				{
+					if (canAttack)
+						attack(_target.transform.position);
+					else
+					{
+						moveAnim(true);
+						nma.destination = _target.transform.position;
+					}
+				}
+				else
+				{
+					tryPickUp(_hits);
+					if (!tryAttack(_hits))
+						tryMove(_hits);
+				}
 			}
-			else
-				attackAnim1(false);
+			if (Input.GetMouseButtonUp(0))
+				stopAttack();
 			if (st.hp <= 0)
 				StartCoroutine(Die());
 			cam.transform.position = transform.position - _camOffset;

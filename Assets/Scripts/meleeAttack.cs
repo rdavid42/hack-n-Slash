@@ -12,7 +12,7 @@ public class meleeAttack : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider c)
 	{
-		if (c.gameObject.tag == "zombie" && player.attacking)
+		if (c.gameObject.tag == "enemy" && player.attacking)
 		{
 			stats e = c.gameObject.GetComponentInParent<enemy>().st;
 			e.hp -= player.st.finalDamage(e);
