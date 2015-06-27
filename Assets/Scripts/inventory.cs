@@ -18,11 +18,9 @@ public class inventory : MonoBehaviour
 
 		size = 18;
 		slots = new GameObject[size];
-		i = 0;
-		foreach (Transform child in grid)
+		for (i = 0; i < size; ++i)
 		{
-			slots[i] = child.gameObject;
-			i++;
+			slots[i] = null;
 		}
 	}
 
@@ -36,10 +34,8 @@ public class inventory : MonoBehaviour
 			{
 				Destroy(item.GetComponent<Rigidbody>());
 				item.GetComponent<MeshCollider>().enabled = false;
-				item.transform.position = new Vector3(10.0f, -10.0f, 0.0f);
-				item.transform.eulerAngles = new Vector3(0.0f, 0.0f, 45.0f);
-				item.transform.localScale = new Vector3(40.0f, 40.0f, 40.0f);
 				item.transform.parent = slots[i].transform;
+				item.SetActive(false);
 			}
 		}
 	}

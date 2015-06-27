@@ -181,12 +181,7 @@ public class UI : MonoBehaviour {
 
 	public void printInventory()
 	{
-		int i, j;
 
-		for (i = 0; i < player.inv.width; i++)
-		{
-
-		}
 	}
 
 	void Update()
