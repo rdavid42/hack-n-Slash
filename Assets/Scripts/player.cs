@@ -34,6 +34,32 @@ public class player : MonoBehaviour
 		moveAnim(false);
 	}
 
+	void OnLevelWasLoaded(int level)
+	{
+		if (level == 0)
+		{
+			Debug.Log("level 0");
+		}
+		if (level == 1)
+		{
+			Debug.Log("level 1");
+			transform.localPosition = new Vector3(71.52f, 56.19f, 45.28f);
+			gameObject.GetComponent<NavMeshAgent>().enabled = true;
+		}
+		if (level == 2)
+		{
+			Debug.Log("level 2");
+			transform.localPosition = new Vector3(199.99f, 0.55f, 16.03f);
+			gameObject.GetComponent<NavMeshAgent>().enabled = true;
+		}
+		if (level == 3)
+		{
+			Debug.Log("level 3");
+			transform.localPosition = new Vector3(98.6f, 0.55f, 2.15f);
+			gameObject.GetComponent<NavMeshAgent>().enabled = true;
+		}
+	}
+
 	void levelUpCheck()
 	{
 		if (st.xp >= st.xpNext)
@@ -133,6 +159,7 @@ public class player : MonoBehaviour
 	{
 		if (c.gameObject.tag == "endLevel")
 		{
+			gameObject.GetComponent<NavMeshAgent>().enabled = false;
 			Application.LoadLevel(Application.loadedLevel + 1);
 		}
 	}
@@ -142,7 +169,10 @@ public class player : MonoBehaviour
 		if (c.gameObject.tag == "enemyTrigger")
 			canAttack = true;
 		if (c.gameObject.tag == "itemPickUp" && c.gameObject.transform.parent.gameObject == _pickUpTarget)
+		{
 			inv.addItem(c.gameObject.transform.parent.gameObject);
+			_pickUpTarget = null;
+		}
 		if (Input.GetMouseButton(0) && c.gameObject == _target)
 			attack(_target.transform.position);
 	}
@@ -185,6 +215,7 @@ public class player : MonoBehaviour
 				return (true);
 			}
 		}
+		_pickUpTarget = null;
 		return (false);
 	}
 
@@ -243,10 +274,13 @@ public class player : MonoBehaviour
 				}
 				else
 				{
-					tryPickUp(_hits);
 					if (!tryAttack(_hits))
 						tryMove(_hits);
 				}
+			}
+			if (Input.GetMouseButtonDown(0))
+			{
+				tryPickUp(_hits);
 			}
 			if (Input.GetMouseButtonUp(0))
 				stopAttack();

@@ -12,7 +12,7 @@ public class PlayerCamera : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 7.0f, player.transform.position.z - 7.0f);
-		transform.eulerAngles = new Vector3(45.0f, 0.0f, 0.0f);
+		transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 7.0f, player.transform.position.z - 10.0f);
+		transform.eulerAngles = new Vector3(30.0f, 0.0f, 0.0f);
 	}
 }

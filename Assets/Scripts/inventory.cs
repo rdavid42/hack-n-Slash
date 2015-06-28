@@ -26,41 +26,50 @@ public class inventory : MonoBehaviour
 	public GameObject			rightHand;
 	public GameObject			lefthand;
 
+	public bool					dropItem;
+
+	public static bool			loaded = false;
 
 	// Use this for initialization
 	void Start()
 	{
-		int i;
-
-		inside = null;
-		currentItemDragged = null;
-		draggedFrom = null;
-		insideEquiped = null;
-
-		isize = grid.transform.childCount;
-		esize = equiped.transform.childCount;
-
-		inventoryItems = new GameObject[isize];
-		inventorySlots = new GameObject[isize];
-		equipedItems = new GameObject[esize];
-		equipedSlots = new GameObject[esize];
-
-		for (i = 0; i < isize; ++i)
-			inventoryItems[i] = null;
-		i = 0;
-		foreach (Transform child in grid.transform)
+		DontDestroyOnLoad(gameObject);
+		if (!loaded)
 		{
-			inventorySlots[i] = child.gameObject;
-			i++;
-		}
+			int i;
 
-		for (i = 0; i < esize; ++i)
-			equipedItems[i] = null;
-		i = 0;
-		foreach (Transform child in equiped.transform)
-		{
-			equipedSlots[i] = child.gameObject;
-			i++;
+			dropItem = false;
+			inside = null;
+			currentItemDragged = null;
+			draggedFrom = null;
+			insideEquiped = null;
+
+			isize = grid.transform.childCount;
+			esize = equiped.transform.childCount;
+
+			inventoryItems = new GameObject[isize];
+			inventorySlots = new GameObject[isize];
+			equipedItems = new GameObject[esize];
+			equipedSlots = new GameObject[esize];
+
+			for (i = 0; i < isize; ++i)
+				inventoryItems[i] = null;
+			i = 0;
+			foreach (Transform child in grid.transform)
+			{
+				inventorySlots[i] = child.gameObject;
+				i++;
+			}
+
+			for (i = 0; i < esize; ++i)
+				equipedItems[i] = null;
+			i = 0;
+			foreach (Transform child in equiped.transform)
+			{
+				equipedSlots[i] = child.gameObject;
+				i++;
+			}
+			loaded = true;
 		}
 	}
 	
@@ -133,6 +142,7 @@ public class inventory : MonoBehaviour
 		system.RaycastAll(pointer, hits);
 		
 		inside = null;
+		dropItem = true;
 		insideEquiped = null;
 		for (k = 0; k < hits.Count; k++)
 		{
@@ -140,6 +150,8 @@ public class inventory : MonoBehaviour
 				inside = hits[k].gameObject;
 			else if (hits[k].gameObject.tag == "equipmentCell")
 				insideEquiped = hits[k].gameObject;
+			else if (hits[k].gameObject.tag == "inventory" || hits[k].gameObject.tag == "cell")
+				dropItem = false;
 		}
 	}
 
@@ -239,15 +251,39 @@ public class inventory : MonoBehaviour
 				}
 				else
 				{
-					d = dragged.GetComponent<Image>();
-					c = draggedFrom.transform.GetChild(0).gameObject.GetComponent<Image>();
-					c.sprite = d.sprite;
-					c.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-					d.sprite = null;
-					d.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-					draggedFrom = null;
-					currentItemDragged = null;
-					dragged.SetActive(false);
+					if (dropItem)
+					{
+						i = findSlotId(draggedFrom);
+						if (inventoryItems[i] != null)
+						{
+							d = dragged.GetComponent<Image>();
+							p = draggedFrom.transform.GetChild(0).gameObject.GetComponent<Image>();
+							d.sprite = null;
+							d.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+							p.sprite = null;
+							p.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+							GameObject drop = inventoryItems[i];
+							drop.transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 1.0f, player.transform.position.z);
+							drop.AddComponent<Rigidbody>();
+							drop.GetComponent<MeshCollider>().enabled = true;
+							drop.transform.GetChild(1).gameObject.SetActive(true);
+							drop.SetActive(true);
+							inventoryItems[i] = null;
+							dropItem = false;
+						}
+					}
+					else
+					{
+						d = dragged.GetComponent<Image>();
+						c = draggedFrom.transform.GetChild(0).gameObject.GetComponent<Image>();
+						c.sprite = d.sprite;
+						c.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+						d.sprite = null;
+						d.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+						draggedFrom = null;
+						currentItemDragged = null;
+						dragged.SetActive(false);
+					}
 				}
 			}
 		}
