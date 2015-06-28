@@ -371,5 +371,10 @@ public class player : MonoBehaviour
 		{
 			spell[4].launch();
 		}
+		if (Input.GetKeyDown(KeyCode.L))
+		{
+			levelUp();
+			st.xp = 0;
+		}
 	}
 }

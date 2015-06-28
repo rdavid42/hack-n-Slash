@@ -105,6 +105,7 @@ public class enemy : MonoBehaviour {
 					GameObject pot = (GameObject)Instantiate(lifePotion, transform.position, Quaternion.identity);
 					pot.SetActive(true);
 				}
+				player.itemgen.tryGenerateItem(transform.position, st.level, true);
 				StartCoroutine(die());
 			}
 		}
