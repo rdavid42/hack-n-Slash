@@ -119,7 +119,10 @@ public class inventory : MonoBehaviour
 				item.GetComponent<MeshCollider>().enabled = false;
 				item.transform.GetChild(1).gameObject.SetActive(false);
 				if (item.GetComponent<itemStats>().type == 0)
+				{
 					item.GetComponent<meleeAttack>().player = player;
+					item.GetComponent<meleeAttack>().ist = item.GetComponent<itemStats>();
+				}
 				Image img = inventorySlots[i].transform.GetChild(0).GetComponent<Image>();
 				img.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 				img.sprite = item.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite;
