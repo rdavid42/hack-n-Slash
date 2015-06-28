@@ -83,6 +83,28 @@ public class player : MonoBehaviour
 		}
 	}
 
+	void deadReplace()
+	{
+		int lvl = Application.loadedLevel;
+
+		if (lvl == 0)
+		{
+			transform.localPosition = new Vector3(210.16f, 15.29f, 67.14f);
+		}
+		if (lvl == 1)
+		{
+			transform.localPosition = new Vector3(71.52f, 56.19f, 45.28f);
+		}
+		if (lvl == 2)
+		{
+			transform.localPosition = new Vector3(199.99f, 0.55f, 16.03f);
+		}
+		if (lvl == 3)
+		{
+			transform.localPosition = new Vector3(98.6f, 0.55f, 2.15f);
+		}
+	}
+
 	void levelUpCheck()
 	{
 		if (st.xp >= st.xpNext)
@@ -175,7 +197,12 @@ public class player : MonoBehaviour
 		anim.SetBool("die", true);
 		ui.enableDeathPanel();
 		yield return new WaitForSeconds(3.0f);
-		Application.LoadLevel(Application.loadedLevel);
+		deadReplace();
+		ui.disableDeathPanel();
+		anim.SetBool("die", false);
+		st.xp = 0;
+		dead = false;
+		st.hp = st.maxHp;
 	}
 
 	void OnTriggerEnter(Collider c)	
