@@ -43,7 +43,6 @@ public class player : MonoBehaviour
 		spawner			sp;
 		GameObject[]	spawners;
 
-		Debug.Log ("toto");
 		spawners = GameObject.FindGameObjectsWithTag("spawner");
 		foreach (GameObject s in spawners)
 		{
