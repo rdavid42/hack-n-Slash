@@ -18,6 +18,8 @@ public class player : MonoBehaviour
 	public UI						ui;
 	public itemGenerator			itemgen;
 	public inventory				inv;
+	public GameObject[]				enemies;
+	public GameObject				lifePotion;
 
 	private RaycastHit[]			_hits;
 
@@ -26,12 +28,30 @@ public class player : MonoBehaviour
 
 	void Start()
 	{
+		setSpawners();
 		canLevelUp = false;
 		attacking = false;
 		canAttack = false;
 		_target = null;
 		_pickUpTarget = null;
 		moveAnim(false);
+	}
+
+	void setSpawners()
+	{
+		spawner			sp;
+		GameObject[]	spawners;
+
+		Debug.Log ("toto");
+		spawners = GameObject.FindGameObjectsWithTag("spawner");
+		foreach (GameObject s in spawners)
+		{
+			Debug.Log (s.gameObject);
+			sp = s.GetComponent<spawner>();
+			sp.enemies = enemies;
+			sp.lifePotion = lifePotion;
+			sp.player = this;
+		}
 	}
 
 	void OnLevelWasLoaded(int level)
@@ -43,18 +63,21 @@ public class player : MonoBehaviour
 		if (level == 1)
 		{
 			Debug.Log("level 1");
+			setSpawners();
 			transform.localPosition = new Vector3(71.52f, 56.19f, 45.28f);
 			gameObject.GetComponent<NavMeshAgent>().enabled = true;
 		}
 		if (level == 2)
 		{
 			Debug.Log("level 2");
+			setSpawners();
 			transform.localPosition = new Vector3(199.99f, 0.55f, 16.03f);
 			gameObject.GetComponent<NavMeshAgent>().enabled = true;
 		}
 		if (level == 3)
 		{
 			Debug.Log("level 3");
+			setSpawners();
 			transform.localPosition = new Vector3(98.6f, 0.55f, 2.15f);
 			gameObject.GetComponent<NavMeshAgent>().enabled = true;
 		}

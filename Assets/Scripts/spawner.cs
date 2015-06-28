@@ -33,6 +33,7 @@ public class spawner : MonoBehaviour {
 		int type = getType();
 		currentZomb = (GameObject)Instantiate(enemies[type], transform.position, Quaternion.identity);
 		currentZomb.SetActive(true);
+		currentZomb.tag = "enemy";
 		currentZombScript = currentZomb.GetComponent<enemy>();
 		currentZombScript.st.level = player.st.level;
 		currentZombScript.st.calculateEnemyStats();
