@@ -10,7 +10,7 @@ public class spellEffect : MonoBehaviour {
 	public string	description;
 	public int		level;
 	public int		tier;
-
+	public int		firerate;
 	// Use this for initialization
 	void Start () {
 	
