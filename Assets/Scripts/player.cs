@@ -333,7 +333,7 @@ public class player : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Alpha3) && spell[2].canBeUse)
 		{
 			transform.LookAt(new Vector3(_hits[0].point.x, 0, _hits[0].point.z));
-			spell[2].gameObject.transform.position = new Vector3(_hits[0].point.x, 0, _hits[0].point.z);
+			spell[2].gameObject.transform.position = new Vector3(_hits[0].point.x, _hits[0].point.y, _hits[0].point.z);
 			spell[2].launch();
 		}
 		if (Input.GetKeyDown(KeyCode.Alpha4) && spell[3].canBeUse)
