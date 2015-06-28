@@ -37,7 +37,7 @@ public class spellEffect : MonoBehaviour {
 		}
 		if (gameObject.name == "fireBall" && spellAnimation.activeSelf)
 		{
-			gameObject.transform.position += new Vector3(transform.forward.normalized.x, 0, transform.forward.normalized.z);
+			gameObject.transform.position += new Vector3(transform.forward.normalized.x * 3, 0, transform.forward.normalized.z * 3);
 		}
 		if (spellAnimation.activeSelf && !spellAnimation.GetComponent<ParticleSystem>().isPlaying)
 		{
