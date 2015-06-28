@@ -29,11 +29,14 @@ public class spellEffect : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		elapsedTime += Time.deltaTime;
-		if (elapsedTime >= cooldown)
+		if (canBeUse == false)
 		{
-			canBeUse = true;
-			elapsedTime = 0;
+			elapsedTime += Time.deltaTime;
+			if (elapsedTime >= cooldown)
+			{
+				canBeUse = true;
+				elapsedTime = 0;
+			}
 		}
 		if (gameObject.name == "fireBall" && spellAnimation.activeSelf)
 		{

@@ -337,7 +337,7 @@ public class player : MonoBehaviour
 		}
 		if (Input.GetKeyDown(KeyCode.Alpha4) && spell[3].canBeUse)
 		{
-			spell[3].gameObject.transform.position = transform.position;
+			spell[3].gameObject.transform.position = new Vector3 (transform.position.x, transform.position.y + 1, transform.position.z);
 			spell[3].launch();
 		}
 		if (Input.GetKeyDown(KeyCode.Alpha5) && spell[4].canBeUse)
