@@ -18,7 +18,7 @@ public class player : MonoBehaviour
 	public UI						ui;
 	public itemGenerator			itemgen;
 	public inventory				inv;
-
+	public spellEffect[]			spell;
 	private RaycastHit[]			_hits;
 
 	private GameObject				_target;
@@ -254,6 +254,38 @@ public class player : MonoBehaviour
 				StartCoroutine(Die());
 			if (Input.GetKeyDown(KeyCode.G))
 				itemgen.tryGenerateItem(transform.position, st.level, true);
+			if (Input.GetKeyDown(KeyCode.Alpha1) && spell[0].canBeUse)
+			{
+				transform.LookAt(new Vector3(_hits[0].point.x, 0, _hits[0].point.z));
+				spell[0].gameObject.transform.position = transform.position;
+				spell[0].gameObject.transform.rotation = transform.rotation;
+				spell[0].launch();
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha2) && spell[1].canBeUse)
+			{
+				transform.LookAt(new Vector3(_hits[0].point.x, 0, _hits[0].point.z));
+				spell[1].gameObject.transform.position = transform.position;
+				spell[1].gameObject.transform.rotation = transform.rotation;
+				spell[1].launch();
+				st.hp += 30;
+				if (st.hp > st.maxHp)
+					st.hp = st.maxHp;
+			}
+		}
+		if (Input.GetKeyDown(KeyCode.Alpha3) && spell[2].canBeUse)
+		{
+			transform.LookAt(new Vector3(_hits[0].point.x, 0, _hits[0].point.z));
+			spell[2].gameObject.transform.position = new Vector3(_hits[0].point.x, 0, _hits[0].point.z);
+			spell[2].launch();
+		}
+		if (Input.GetKeyDown(KeyCode.Alpha4) && spell[3].canBeUse)
+		{
+			spell[3].gameObject.transform.position = transform.position;
+			spell[3].launch();
+		}
+		if (Input.GetKeyDown(KeyCode.Alpha5) && spell[4].canBeUse)
+		{
+			spell[4].launch();
 		}
 	}
 }

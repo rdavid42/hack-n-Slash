@@ -17,9 +17,12 @@ public class spellDamage : MonoBehaviour {
 	void OnParticleCollision(GameObject c)
 	{
 		Debug.Log (gameObject.name);
-		if (c.gameObject.tag == "enemy")
+		Debug.Log (c.gameObject.tag);
+
+		if (c.gameObject.tag == "enemyTrigger" || c.gameObject.tag == "enemy")
 		{
-			enemy en = c.gameObject.GetComponentInParent<enemy>();
+			Debug.Log ("asdawd");
+			enemy en = c.gameObject.transform.parent.gameObject.GetComponent<enemy>();
 			if (en != null && !en.dead)
 			{
 				stats e = en.st;
@@ -36,7 +39,8 @@ public class spellDamage : MonoBehaviour {
 	void OnTriggerEnter(Collider c)
 	{
 		Debug.Log("awd");
-		if (c.gameObject.tag == "enemy")
+		Debug.Log (c.gameObject.tag);
+		if (c.gameObject.tag == "enemyTrigger" || c.gameObject.tag == "enemy")
 		{
 			enemy en = c.gameObject.GetComponentInParent<enemy>();
 			if (en != null && !en.dead)
@@ -59,7 +63,7 @@ public class spellDamage : MonoBehaviour {
 			elapsedTime += Time.deltaTime;	
 			if (elapsedTime > gameObject.GetComponentInParent<spellEffect>().firerate)
 			{
-				if (c.gameObject.tag == "enemy")
+				if (c.gameObject.tag == "enemyTrigger")
 				{
 					enemy en = c.gameObject.GetComponentInParent<enemy>();
 					if (en != null && !en.dead)

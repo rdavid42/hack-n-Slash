@@ -21,6 +21,7 @@ public class meleeAttack : MonoBehaviour {
 				stats e = en.st;
 				if (e != null)
 				{
+					Debug.Log ("hit");
 					e.hp -= player.st.finalDamage(e) + ist.finalDamage(e);
 					if (e.hp <= 0)
 						e.hp = 0;
