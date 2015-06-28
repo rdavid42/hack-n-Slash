@@ -2,29 +2,43 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class inventory : MonoBehaviour
 {
+	public player				player;
 	public GameObject			grid;
 	public GameObject			equiped;
 	public GameObject[]			inventorySlots;
 	public GameObject[]			equipedSlots;
 	public GameObject[]			inventoryItems;
 	public GameObject[]			equipedItems;
-	public int					currentDragged;
-	public GameObject			dragged;
 	public UI					ui;
 	public int					isize;
 	public int					esize;
+	
+	public GameObject			dragged;
+	public GameObject			currentItemDragged;
+	public GameObject			draggedFrom;
+	public GameObject			inside;
+	public GameObject			insideEquiped;
+
+	public GameObject			rightHand;
+	public GameObject			lefthand;
+
+
 	// Use this for initialization
 	void Start()
 	{
 		int i;
-		
+
+		inside = null;
+		currentItemDragged = null;
+		draggedFrom = null;
+		insideEquiped = null;
+
 		isize = grid.transform.childCount;
 		esize = equiped.transform.childCount;
-
-		currentDragged = -1;
 
 		inventoryItems = new GameObject[isize];
 		inventorySlots = new GameObject[isize];
@@ -49,45 +63,11 @@ public class inventory : MonoBehaviour
 			i++;
 		}
 	}
-
-	public void beginDrag(GameObject item)
-	{
-		Image current = item.GetComponent<Image>();
-		int id = findSlotId(item.transform.parent.gameObject);
-		if (id != -1)
-		{
-			dragged.SetActive(true);
-			Image drag = dragged.GetComponent<Image>();
-			drag.sprite = current.sprite;
-			current.sprite = null;
-			current.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-			currentDragged = id;
-		}
-	}
-
-	public void dragging()
-	{
-		ui.overButton = true;
-		dragged.transform.position = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z);
-	}
-
-	public void endDrag(GameObject item)
-	{
-		int			id = findSlotId(item.transform.parent.gameObject);
-		Image		current = item.GetComponent<Image>();
-
-		if (id != -1)
-		{
-
-		}
-		dragged.SetActive(false);
-		currentDragged = -1;
-	}
-
+	
 	private int findSlotId(GameObject item)
 	{
 		int i;
-
+		
 		i = 0;
 		foreach (GameObject s in inventorySlots)
 		{
@@ -97,7 +77,7 @@ public class inventory : MonoBehaviour
 		}
 		return (-1);
 	}
-
+	
 	private int findEquipedId(GameObject item)
 	{
 		int i;
@@ -112,7 +92,13 @@ public class inventory : MonoBehaviour
 		return (-1);
 	}
 
-	public void addItem(GameObject item)
+	public void dragging()
+	{
+		ui.overButton = true;
+		dragged.transform.position = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z);
+	}
+
+	public bool addItem(GameObject item)
 	{
 		int i;
 
@@ -122,20 +108,175 @@ public class inventory : MonoBehaviour
 			{
 				Destroy(item.GetComponent<Rigidbody>());
 				item.GetComponent<MeshCollider>().enabled = false;
+				item.transform.GetChild(1).gameObject.SetActive(false);
 				Image img = inventorySlots[i].transform.GetChild(0).GetComponent<Image>();
 				img.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 				img.sprite = item.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite;
 				inventoryItems[i] = item;
 				item.SetActive(false);
-				break;
+				return (true);
 			}
 		}
+		return (false);
 	}
-	
+
+	public void getInsideCell()
+	{
+		EventSystem system = EventSystem.current;
+		PointerEventData pointer = new PointerEventData(system);
+		List<RaycastResult> hits = new List<RaycastResult>();
+		int k;
+		
+		pointer.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+		system.RaycastAll(pointer, hits);
+		
+		inside = null;
+		insideEquiped = null;
+		for (k = 0; k < hits.Count; k++)
+		{
+			if (hits[k].gameObject.tag == "cell")
+				inside = hits[k].gameObject;
+			else if (hits[k].gameObject.tag == "equipmentCell")
+				insideEquiped = hits[k].gameObject;
+		}
+	}
+
+	public void equipItems()
+	{
+		if (equipedItems[0] != null)
+		{
+			equipedItems[0].transform.SetParent(rightHand.transform);
+			equipedItems[0].SetActive(true);
+			equipedItems[0].GetComponent<meleeAttack>().player = player;
+			equipedItems[0].transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+			equipedItems[0].transform.localEulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+		}
+		if (equipedItems[1] != null)
+		{
+			equipedItems[1].transform.SetParent(lefthand.transform);
+			equipedItems[1].SetActive(true);
+			equipedItems[1].transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+			equipedItems[1].transform.localEulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+		}
+	}
+
 	// Update is called once per frame
 	void Update()
 	{
-		if (currentDragged != -1)
+		Image c, d, p;
+		int id, i;
+		GameObject prev;
+		itemStats ist;
+
+		getInsideCell();
+		if (currentItemDragged != null)
 			dragging();
+		if (Input.GetMouseButtonDown(0))
+		{
+			if (inside != null)
+			{
+				id = findSlotId(inside);
+				if (id != -1 && inventoryItems[id] != null)
+				{
+					d = dragged.GetComponent<Image>();
+					c = inside.transform.GetChild(0).gameObject.GetComponent<Image>();
+					draggedFrom = inside;
+					currentItemDragged = inventoryItems[id];
+					d.sprite = c.sprite;
+					d.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+					c.sprite = null;
+					c.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+					dragging();
+					dragged.SetActive(true);
+				}
+			}
+		}
+		else if (Input.GetMouseButtonUp(0))
+		{
+			if (currentItemDragged != null)
+			{
+				if (inside != null)
+				{
+					id = findSlotId(inside);
+					if (id != -1)
+					{
+						if (inventoryItems[id] == null)
+						{
+							i = findSlotId(draggedFrom);
+							d = dragged.GetComponent<Image>();
+							c = inside.transform.GetChild(0).gameObject.GetComponent<Image>();
+							c.sprite = d.sprite;
+							c.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+							d.sprite = null;
+							d.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+							inventoryItems[id] = inventoryItems[i];
+							inventoryItems[i] = null;
+							draggedFrom = null;
+							currentItemDragged = null;
+							dragged.SetActive(false);
+						}
+						else
+						{
+							i = findSlotId(draggedFrom);
+							d = dragged.GetComponent<Image>();
+							c = inside.transform.GetChild(0).gameObject.GetComponent<Image>();
+							p = draggedFrom.transform.GetChild(0).gameObject.GetComponent<Image>();
+							p.sprite = c.sprite;
+							p.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+							c.sprite = d.sprite;
+							c.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+							d.sprite = null;
+							d.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+							prev = inventoryItems[i];
+							inventoryItems[i] = inventoryItems[id];
+							inventoryItems[id] = prev;
+							draggedFrom = null;
+							currentItemDragged = null;
+							dragged.SetActive(false);
+						}
+					}
+				}
+				else
+				{
+					d = dragged.GetComponent<Image>();
+					c = draggedFrom.transform.GetChild(0).gameObject.GetComponent<Image>();
+					c.sprite = d.sprite;
+					c.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+					d.sprite = null;
+					d.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+					draggedFrom = null;
+					currentItemDragged = null;
+					dragged.SetActive(false);
+				}
+			}
+		}
+		else if (Input.GetMouseButtonDown(1))
+		{
+			if (inside != null)
+			{
+				id = findSlotId(inside);
+				if (id != -1)
+				{
+					c = inside.transform.GetChild(0).gameObject.GetComponent<Image>();
+					ist = inventoryItems[id].GetComponent<itemStats>();
+					if (equipedItems[ist.type] == null)
+					{
+						d = equipedSlots[ist.type].transform.GetChild(0).gameObject.GetComponent<Image>();
+						p = inside.transform.GetChild(0).gameObject.GetComponent<Image>();
+						d.sprite = p.sprite;
+						d.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+						p.sprite = null;
+						p.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+						equipedItems[ist.type] = inventoryItems[id];
+						inventoryItems[id] = null;
+						equipItems();
+					}
+					else
+					{
+
+					}
+				}
+			}
+		}
 	}
 }

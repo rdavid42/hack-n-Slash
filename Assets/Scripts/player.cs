@@ -20,14 +20,12 @@ public class player : MonoBehaviour
 	public inventory				inv;
 
 	private RaycastHit[]			_hits;
-	private Vector3					_camOffset;
 
 	private GameObject				_target;
 	private GameObject				_pickUpTarget;
 
 	void Start()
 	{
-		_camOffset = transform.position - cam.transform.position;
 		canLevelUp = false;
 		attacking = false;
 		canAttack = false;
@@ -245,7 +243,6 @@ public class player : MonoBehaviour
 				stopAttack();
 			if (st.hp <= 0)
 				StartCoroutine(Die());
-			cam.transform.position = transform.position - _camOffset;
 			if (Input.GetKeyDown(KeyCode.G))
 				itemgen.tryGenerateItem(transform.position, st.level, true);
 		}
