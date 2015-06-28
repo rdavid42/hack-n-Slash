@@ -159,6 +159,7 @@ public class player : MonoBehaviour
 
 	void attack(Vector3 pos)
 	{
+		anim.speed = inv.equipedItems[0].GetComponent<itemStats>().speed;
 		transform.LookAt(pos);
 		attacking = true;
 		moveAnim(false);
@@ -167,6 +168,7 @@ public class player : MonoBehaviour
 
 	void stopAttack()
 	{
+		anim.speed = 1.0f;
 		_target = null;
 		canAttack = false;
 		attacking = false;
