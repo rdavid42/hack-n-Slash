@@ -129,6 +129,14 @@ public class player : MonoBehaviour
 		Application.LoadLevel(Application.loadedLevel);
 	}
 
+	void OnTriggerEnter(Collider c)	
+	{
+		if (c.gameObject.tag == "endLevel")
+		{
+			Application.LoadLevel(Application.loadedLevel + 1);
+		}
+	}
+
 	void OnTriggerStay(Collider c)
 	{
 		if (c.gameObject.tag == "enemyTrigger")
