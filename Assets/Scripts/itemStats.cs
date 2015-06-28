@@ -24,6 +24,16 @@ public class itemStats : MonoBehaviour
 	{
 	
 	}
+	
+	public int baseDamage()
+	{
+		return (Random.Range(finalMinDmg, finalMaxDmg));
+	}
+	
+	public int finalDamage(stats target)
+	{
+		return (baseDamage() * (1 - target.armor / 200));
+	}
 
 	private void generateQuality()
 	{

@@ -4,6 +4,7 @@ using System.Collections;
 public class meleeAttack : MonoBehaviour {
 
 	public player			player;
+	public itemStats		ist;
 
 	// Use this for initialization
 	void Start () {
@@ -17,7 +18,7 @@ public class meleeAttack : MonoBehaviour {
 			stats e = c.gameObject.GetComponentInParent<enemy>().st;
 			if (e != null)
 			{
-				e.hp -= player.st.finalDamage(e);
+				e.hp -= player.st.finalDamage(e) + ist.finalDamage(e);
 				if (e.hp <= 0)
 					e.hp = 0;
 			}
