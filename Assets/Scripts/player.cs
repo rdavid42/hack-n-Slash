@@ -98,12 +98,25 @@ public class player : MonoBehaviour
 			if (hit.collider.gameObject.tag == "enemyTrigger" && !ui.overButton)
 			{
 				enemy e = hit.collider.gameObject.GetComponentInParent<enemy>();
-				ui.enableEnemyPanel();
-				ui.updateEnemyInfo(e);
+				if (e)
+				{
+					ui.enableEnemyPanel();
+					ui.updateEnemyInfo(e);
+				}
 				return ;
 			}
 		}
-		ui.disableEnemyPanel();
+		if (_target != null)
+		{
+			enemy e = _target.GetComponent<enemy>();
+			if (e)
+			{
+				ui.enableEnemyPanel();
+				ui.updateEnemyInfo(e);
+			}
+		}
+		else
+			ui.disableEnemyPanel();
 	}
 	
 	IEnumerator Die()
