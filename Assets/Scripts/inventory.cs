@@ -109,6 +109,8 @@ public class inventory : MonoBehaviour
 				Destroy(item.GetComponent<Rigidbody>());
 				item.GetComponent<MeshCollider>().enabled = false;
 				item.transform.GetChild(1).gameObject.SetActive(false);
+				if (item.GetComponent<itemStats>().type == 0)
+					item.GetComponent<meleeAttack>().player = player;
 				Image img = inventorySlots[i].transform.GetChild(0).GetComponent<Image>();
 				img.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 				img.sprite = item.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite;
@@ -147,7 +149,6 @@ public class inventory : MonoBehaviour
 		{
 			equipedItems[0].transform.SetParent(rightHand.transform);
 			equipedItems[0].SetActive(true);
-			equipedItems[0].GetComponent<meleeAttack>().player = player;
 			equipedItems[0].transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
 			equipedItems[0].transform.localEulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
 		}
@@ -258,22 +259,37 @@ public class inventory : MonoBehaviour
 				if (id != -1)
 				{
 					c = inside.transform.GetChild(0).gameObject.GetComponent<Image>();
-					ist = inventoryItems[id].GetComponent<itemStats>();
-					if (equipedItems[ist.type] == null)
+					if (inventoryItems[id] != null)
 					{
-						d = equipedSlots[ist.type].transform.GetChild(0).gameObject.GetComponent<Image>();
-						p = inside.transform.GetChild(0).gameObject.GetComponent<Image>();
-						d.sprite = p.sprite;
-						d.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-						p.sprite = null;
-						p.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-						equipedItems[ist.type] = inventoryItems[id];
-						inventoryItems[id] = null;
-						equipItems();
-					}
-					else
-					{
-
+						ist = inventoryItems[id].GetComponent<itemStats>();
+						if (equipedItems[ist.type] == null)
+						{
+							d = equipedSlots[ist.type].transform.GetChild(0).gameObject.GetComponent<Image>();
+							p = inside.transform.GetChild(0).gameObject.GetComponent<Image>();
+							d.sprite = p.sprite;
+							d.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+							p.sprite = null;
+							p.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+							equipedItems[ist.type] = inventoryItems[id];
+							inventoryItems[id] = null;
+							equipItems();
+						}
+						else
+						{
+							d = equipedSlots[ist.type].transform.GetChild(0).gameObject.GetComponent<Image>();
+							p = inside.transform.GetChild(0).gameObject.GetComponent<Image>();
+							dragged.GetComponent<Image>().sprite = d.sprite;
+							d.sprite = p.sprite;
+							d.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+							p.sprite = dragged.GetComponent<Image>().sprite;
+							p.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+							prev = equipedItems[ist.type];
+							equipedItems[ist.type] = inventoryItems[id];
+							inventoryItems[id] = prev;
+							inventoryItems[id].transform.SetParent(null);
+							inventoryItems[id].SetActive(false);
+							equipItems();
+						}
 					}
 				}
 			}

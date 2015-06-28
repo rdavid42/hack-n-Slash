@@ -15,12 +15,16 @@ public class meleeAttack : MonoBehaviour {
 	{
 		if (c.gameObject.tag == "enemy" && player.attacking)
 		{
-			stats e = c.gameObject.GetComponentInParent<enemy>().st;
-			if (e != null)
+			enemy en = c.gameObject.GetComponentInParent<enemy>();
+			if (en != null && !en.dead)
 			{
-				e.hp -= player.st.finalDamage(e) + ist.finalDamage(e);
-				if (e.hp <= 0)
-					e.hp = 0;
+				stats e = en.st;
+				if (e != null)
+				{
+					e.hp -= player.st.finalDamage(e) + ist.finalDamage(e);
+					if (e.hp <= 0)
+						e.hp = 0;
+				}
 			}
 		}
 	}

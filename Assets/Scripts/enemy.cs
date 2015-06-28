@@ -95,6 +95,11 @@ public class enemy : MonoBehaviour {
 				spawn.canSpawn = true;
 				player.st.xp += st.xp;
 				player.st.money += st.money;
+				foreach (Transform f in gameObject.transform)
+				{
+					if (f.gameObject.tag == "enemyTrigger")
+						f.gameObject.SetActive(false);
+				}
 				if (Random.Range(0, 3) == 0)
 				{
 					GameObject pot = (GameObject)Instantiate(lifePotion, transform.position, Quaternion.identity);

@@ -173,7 +173,6 @@ public class player : MonoBehaviour
 		{
 			if (hit.collider.gameObject.tag == "itemPickUp")
 			{
-				Debug.Log(hit.collider.gameObject.transform.parent.gameObject);
 				_pickUpTarget = hit.collider.gameObject.transform.parent.gameObject;
 				return (true);
 			}
