@@ -29,6 +29,11 @@ public class player : MonoBehaviour
 
 	public static bool				cheatsEnabled = true;
 
+	public ParticleSystem			pLevelUp;
+
+	public AudioSource[]			slashSounds;
+	public GameObject[]				bloodEffects;
+
 	void Start()
 	{
 		setSpawners();
@@ -113,6 +118,7 @@ public class player : MonoBehaviour
 
 	public void levelUp()
 	{
+		pLevelUp.Play();
 		upgradePoints += 5;
 		st.level++;
 		st.xp = st.xp - st.xpNext;
