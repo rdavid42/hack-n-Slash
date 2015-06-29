@@ -16,7 +16,7 @@ public class inventory : MonoBehaviour
 	public UI					ui;
 	public int					isize;
 	public int					esize;
-	
+
 	public GameObject			dragged;
 	public GameObject			currentItemDragged;
 	public GameObject			draggedFrom;
@@ -25,52 +25,47 @@ public class inventory : MonoBehaviour
 
 	public GameObject			rightHand;
 	public GameObject			lefthand;
+	public GameObject			itemContainer;
 
 	public bool					dropItem;
-
-	public static bool			loaded = false;
 
 	// Use this for initialization
 	void Start()
 	{
-		DontDestroyOnLoad(gameObject);
-		if (!loaded)
+		int i;
+
+		dropItem = false;
+		inside = null;
+		currentItemDragged = null;
+		draggedFrom = null;
+		insideEquiped = null;
+
+		isize = grid.transform.childCount;
+		esize = equiped.transform.childCount;
+
+		inventoryItems = new GameObject[isize];
+		inventorySlots = new GameObject[isize];
+		equipedItems = new GameObject[esize];
+		equipedSlots = new GameObject[esize];
+
+		for (i = 0; i < isize; ++i)
+			inventoryItems[i] = null;
+		i = 0;
+		foreach (Transform child in grid.transform)
 		{
-			int i;
-
-			dropItem = false;
-			inside = null;
-			currentItemDragged = null;
-			draggedFrom = null;
-			insideEquiped = null;
-
-			isize = grid.transform.childCount;
-			esize = equiped.transform.childCount;
-
-			inventoryItems = new GameObject[isize];
-			inventorySlots = new GameObject[isize];
-			equipedItems = new GameObject[esize];
-			equipedSlots = new GameObject[esize];
-
-			for (i = 0; i < isize; ++i)
-				inventoryItems[i] = null;
-			i = 0;
-			foreach (Transform child in grid.transform)
-			{
-				inventorySlots[i] = child.gameObject;
-				i++;
-			}
-
-			for (i = 0; i < esize; ++i)
-				equipedItems[i] = null;
-			i = 0;
-			foreach (Transform child in equiped.transform)
-			{
-				equipedSlots[i] = child.gameObject;
-				i++;
-			}
-			loaded = true;
+			inventorySlots[i] = child.gameObject;
+			i++;
 		}
+
+		for (i = 0; i < esize; ++i)
+			equipedItems[i] = null;
+		i = 0;
+		foreach (Transform child in equiped.transform)
+		{
+			equipedSlots[i] = child.gameObject;
+			i++;
+		}
+		DontDestroyOnLoad(gameObject);
 	}
 	
 	private int findSlotId(GameObject item)
@@ -92,7 +87,7 @@ public class inventory : MonoBehaviour
 		int i;
 		
 		i = 0;
-		foreach (GameObject s in inventorySlots)
+		foreach (GameObject s in equipedSlots)
 		{
 			if (s == item)
 				return (i);
@@ -115,6 +110,7 @@ public class inventory : MonoBehaviour
 		{
 			if (inventoryItems[i] == null)
 			{
+				item.transform.SetParent(itemContainer.transform);
 				Destroy(item.GetComponent<Rigidbody>());
 				item.GetComponent<MeshCollider>().enabled = false;
 				item.transform.GetChild(1).gameObject.SetActive(false);
@@ -176,6 +172,30 @@ public class inventory : MonoBehaviour
 		}
 	}
 
+	private void showItemDesc()
+	{
+		int i;
+
+		if (inside != null)
+		{
+			i = findSlotId(inside);
+			if (inventoryItems[i] != null)
+				player.ui.showItemPanel(inventoryItems[i].GetComponent<itemStats>());
+			else
+				player.ui.disableItemPanel();
+		}
+		else if (insideEquiped != null)
+		{
+			i = findEquipedId(insideEquiped);
+			if (equipedItems[i])
+				player.ui.showItemPanel(equipedItems[i].GetComponent<itemStats>());
+			else
+				player.ui.disableItemPanel();
+		}
+		else
+			player.ui.disableItemPanel();
+	}
+
 	// Update is called once per frame
 	void Update()
 	{
@@ -187,6 +207,7 @@ public class inventory : MonoBehaviour
 		getInsideCell();
 		if (currentItemDragged != null)
 			dragging();
+		showItemDesc();
 		if (Input.GetMouseButtonDown(0))
 		{
 			if (inside != null)
@@ -267,6 +288,7 @@ public class inventory : MonoBehaviour
 							p.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
 							GameObject drop = inventoryItems[i];
 							drop.transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 1.0f, player.transform.position.z);
+							drop.transform.SetParent(null);
 							drop.AddComponent<Rigidbody>();
 							drop.GetComponent<MeshCollider>().enabled = true;
 							drop.transform.GetChild(1).gameObject.SetActive(true);

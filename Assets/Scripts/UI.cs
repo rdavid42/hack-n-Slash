@@ -44,6 +44,11 @@ public class UI : MonoBehaviour {
 	// inventory panel
 	public GameObject				inventory;
 
+	// inventory description
+	public GameObject				itemPanel;
+	public Text						tItemName;
+	public Text						tItemStats;
+
 	void Start()
 	{
 		overButton = false;
@@ -145,6 +150,34 @@ public class UI : MonoBehaviour {
 		lvl.text = player.st.level.ToString();
 		lifeBar.transform.localScale = new Vector3((float)(player.st.hp * 100.0f / player.st.maxHp) / 100.0f, 1, 1);
 		xpBar.transform.localScale = new Vector3((float)(player.st.xp * 100.0f / player.st.xpNext) / 100.0f, 1, 1);
+	}
+
+	public void showItemPanel(itemStats item)
+	{
+		itemPanel.SetActive(true);
+		tItemName.text = item.finalName;
+		tItemStats.text = "[Lv. " + item.ilvl + "]\n";
+		if (item.type == 0)
+		{
+			// handle weapon
+			tItemStats.text += "dmg: " + item.finalMinDmg.ToString() + " - " + item.finalMaxDmg.ToString() + " +" + item.qualitybonusDmg.ToString() + "\n";
+			tItemStats.text += "aps: " + item.speed.ToString() + "\n";
+			tItemStats.text += "dps: " + item.estimatedDps.ToString() + "\n";
+		}
+		else if (item.type == 1)
+		{
+			// handle shield
+		}
+	}
+
+	public void disableItemPanel()
+	{
+		if (itemPanel.activeSelf)
+		{
+			tItemName.text = "";
+			tItemStats.text = "";
+			itemPanel.SetActive(false);
+		}
 	}
 
 	public void printStatPanel()

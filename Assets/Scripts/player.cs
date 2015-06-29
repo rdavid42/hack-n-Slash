@@ -46,7 +46,6 @@ public class player : MonoBehaviour
 		spawners = GameObject.FindGameObjectsWithTag("spawner");
 		foreach (GameObject s in spawners)
 		{
-			Debug.Log (s.gameObject);
 			sp = s.GetComponent<spawner>();
 			sp.enemies = enemies;
 			sp.lifePotion = lifePotion;
@@ -58,25 +57,21 @@ public class player : MonoBehaviour
 	{
 		if (level == 0)
 		{
-			Debug.Log("level 0");
 		}
 		if (level == 1)
 		{
-			Debug.Log("level 1");
 			setSpawners();
 			transform.localPosition = new Vector3(71.52f, 56.19f, 45.28f);
 			gameObject.GetComponent<NavMeshAgent>().enabled = true;
 		}
 		if (level == 2)
 		{
-			Debug.Log("level 2");
 			setSpawners();
 			transform.localPosition = new Vector3(199.99f, 0.55f, 16.03f);
 			gameObject.GetComponent<NavMeshAgent>().enabled = true;
 		}
 		if (level == 3)
 		{
-			Debug.Log("level 3");
 			setSpawners();
 			transform.localPosition = new Vector3(98.6f, 0.55f, 2.15f);
 			gameObject.GetComponent<NavMeshAgent>().enabled = true;
@@ -203,6 +198,10 @@ public class player : MonoBehaviour
 		st.xp = 0;
 		dead = false;
 		st.hp = st.maxHp;
+		nma.ResetPath();
+		nma.Stop();
+		nma.velocity = Vector3.zero;
+		yield return new WaitForSeconds(3.0f);
 	}
 
 	void OnTriggerEnter(Collider c)	

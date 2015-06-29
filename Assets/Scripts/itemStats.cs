@@ -16,8 +16,10 @@ public class itemStats : MonoBehaviour
 	public int				finalMinDmg;
 	public int				finalMaxDmg;
 	public int				quality;
+	public int				estimatedDps;
 	public string			qualityPrefix;
 	public string			finalName;
+	public string			description;
 
 	// Use this for initialization
 	void Start()
@@ -33,6 +35,11 @@ public class itemStats : MonoBehaviour
 	public int finalDamage(stats target)
 	{
 		return (baseDamage() * (1 - target.armor / 200));
+	}
+
+	public int dmgPerSecond()
+	{
+		return ((int)((((float)finalMinDmg + (float)finalMaxDmg) / 2.0f) * speed));
 	}
 
 	private void generateQuality()
@@ -71,6 +78,7 @@ public class itemStats : MonoBehaviour
 		generateQuality();
 		finalMinDmg = typeBaseMinDmg + (ilvl * (int)((float)typeBaseMinDmg * 15.0f / 100.0f)) + qualitybonusDmg;
 		finalMaxDmg = typeBaseMaxDmg + (ilvl * (int)((float)typeBaseMaxDmg * 15.0f / 100.0f)) + qualitybonusDmg;
+		estimatedDps = dmgPerSecond();
 		generateFinalName();
 	}
 	
