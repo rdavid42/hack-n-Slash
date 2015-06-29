@@ -160,7 +160,11 @@ public class UI : MonoBehaviour {
 		if (item.type == 0)
 		{
 			// handle weapon
-			tItemStats.text += "dmg: " + item.finalMinDmg.ToString() + " - " + item.finalMaxDmg.ToString() + " +" + item.qualitybonusDmg.ToString() + "\n";
+			tItemStats.text += "dmg: " + item.finalMinDmg.ToString() + " - " + item.finalMaxDmg.ToString();
+			if (item.qualitybonusDmg > 0)
+				tItemStats.text += " +" + item.qualitybonusDmg.ToString() + "\n";
+			else
+				tItemStats.text += "\n";
 			tItemStats.text += "aps: " + item.speed.ToString() + "\n";
 			tItemStats.text += "dps: " + item.estimatedDps.ToString() + "\n";
 		}

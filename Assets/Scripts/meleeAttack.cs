@@ -13,7 +13,7 @@ public class meleeAttack : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider c)
 	{
-		if (c.gameObject.tag == "enemy" && player.attacking)
+		if (c.gameObject.tag == "enemy" && player != null && player.attacking)
 		{
 			enemy en = c.gameObject.GetComponentInParent<enemy>();
 			if (en != null && !en.dead)
