@@ -25,7 +25,7 @@ public class spawner : MonoBehaviour {
 
 	int getType()
 	{
-		return (Random.Range(0, enemies.Length - 1));
+		return (Random.Range(0, enemies.Length));
 	}
 
 	public void spawn()

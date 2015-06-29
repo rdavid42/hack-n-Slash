@@ -29,6 +29,11 @@ public class player : MonoBehaviour
 
 	public static bool				cheatsEnabled = true;
 
+	public ParticleSystem			pLevelUp;
+
+	public AudioSource[]			slashSounds;
+	public GameObject[]				bloodEffects;
+
 	void Start()
 	{
 		setSpawners();
@@ -113,6 +118,7 @@ public class player : MonoBehaviour
 
 	public void levelUp()
 	{
+		pLevelUp.Play();
 		upgradePoints += 5;
 		st.level++;
 		st.xp = st.xp - st.xpNext;
@@ -358,7 +364,7 @@ public class player : MonoBehaviour
 		{
 			_hits = Physics.RaycastAll(cam.ScreenPointToRay(Input.mousePosition), 400.0f);
 			getEnemyInfo(_hits);
-			if (nma.remainingDistance < 1.0f)
+			if (nma.enabled && nma.remainingDistance < 1.0f)
 				stop();
 			levelUpCheck();
 			if (Input.GetMouseButton(0))

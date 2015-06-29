@@ -139,7 +139,12 @@ public class UI : MonoBehaviour {
 
 	public void updateEnemyInfo(enemy e)
 	{
-		enemyHpBar.transform.localScale = new Vector3((float)(e.st.hp * 100.0f / e.st.maxHp) / 100.0f, 1, 1);
+		if (e.st.hp < 0)
+			enemyHpBar.transform.localScale = new Vector3(0, 1, 1);
+		else if (e.st.hp > e.st.maxHp)
+			enemyHpBar.transform.localScale = new Vector3(100, 1, 1);
+		else
+			enemyHpBar.transform.localScale = new Vector3((float)(e.st.hp * 100.0f / e.st.maxHp) / 100.0f, 1, 1);
 		enemyName.text = e.enemyName;
 		enemyHp.text = e.st.hp + " / " + e.st.maxHp;
 	}
