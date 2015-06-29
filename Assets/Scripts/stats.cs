@@ -44,6 +44,11 @@ public class stats : MonoBehaviour
 		agility = (int)((float)agility * (100.0f + (float)(level - 1) * 15.0f) / 100.0f);
 		constitution = (int)((float)constitution * (100.0f + (float)(level - 1) * 15.0f) / 100.0f);
 	}
+	
+	public int dmgPerSecond()
+	{
+		return ((int)((((float)minDamage + (float)maxDamage) / 2.0f)));
+	}
 
 	public bool hitChance(stats target)
 	{

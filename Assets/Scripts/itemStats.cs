@@ -8,6 +8,7 @@ public class itemStats : MonoBehaviour
 	public int				typeBaseMinDmg;
 	public int				typeBaseMaxDmg;
 	public float			speed;
+	public int				armor;
 	public string			name;
 	// generator
 	public int				ilvl;
@@ -17,6 +18,7 @@ public class itemStats : MonoBehaviour
 	public int				finalMaxDmg;
 	public int				quality;
 	public int				estimatedDps;
+	public int				finalArmor;
 	public string			qualityPrefix;
 	public string			finalName;
 	public string			description;
@@ -76,6 +78,10 @@ public class itemStats : MonoBehaviour
 	{
 		this.ilvl = ilvl;
 		generateQuality();
+		if (armor != 0)
+			finalArmor = armor + (ilvl * (int)((float)armor * 10.0f / 100.0f)) + (int)((float)qualitybonusDmg / 2.0f);
+		else
+			finalArmor = 0;
 		finalMinDmg = typeBaseMinDmg + (ilvl * (int)((float)typeBaseMinDmg * 15.0f / 100.0f)) + qualitybonusDmg;
 		finalMaxDmg = typeBaseMaxDmg + (ilvl * (int)((float)typeBaseMaxDmg * 15.0f / 100.0f)) + qualitybonusDmg;
 		estimatedDps = dmgPerSecond();

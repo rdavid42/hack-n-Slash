@@ -31,6 +31,7 @@ public class UI : MonoBehaviour {
 	public Text						statXpNext;
 	public Text						statGold;
 	public Text						statLvl;
+	public Text						statDps;
 
 	// enemy panel
 	public GameObject				enemyui;
@@ -171,6 +172,7 @@ public class UI : MonoBehaviour {
 		else if (item.type == 1)
 		{
 			// handle shield
+			tItemStats.text += "armor: " + item.finalArmor.ToString() + "\n";
 		}
 	}
 
@@ -186,6 +188,9 @@ public class UI : MonoBehaviour {
 
 	public void printStatPanel()
 	{
+		itemStats	item;
+		int			dps;
+
 		if (statPanel.activeSelf)
 		{
 			statStr.text = player.st.strength.ToString();
@@ -199,6 +204,14 @@ public class UI : MonoBehaviour {
 			statGold.text = player.st.money.ToString();
 			statUpgradePoints.text = player.upgradePoints.ToString();
 			statLvl.text = "[Lv." + player.st.level + "]";
+			if (player.inv.equipedItems[0] != null)
+			{
+				item = player.inv.equipedItems[0].GetComponent<itemStats>();
+				dps = player.st.dmgPerSecond() + item.dmgPerSecond();
+			}
+			else
+				dps = player.st.dmgPerSecond();
+			statDps.text = dps.ToString();
 			if (player.upgradePoints > 0)
 			{
 				upStrButton.SetActive(true);
