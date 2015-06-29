@@ -364,7 +364,7 @@ public class player : MonoBehaviour
 		{
 			_hits = Physics.RaycastAll(cam.ScreenPointToRay(Input.mousePosition), 400.0f);
 			getEnemyInfo(_hits);
-			if (nma.remainingDistance < 1.0f)
+			if (nma.enabled && nma.remainingDistance < 1.0f)
 				stop();
 			levelUpCheck();
 			if (Input.GetMouseButton(0))
