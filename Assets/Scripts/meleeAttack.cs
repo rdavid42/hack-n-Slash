@@ -23,13 +23,16 @@ public class meleeAttack : MonoBehaviour {
 				stats e = en.st;
 				if (e != null)
 				{
-					i = Random.Range(0, player.bloodEffects.Length);
-					GameObject blood = (GameObject)Instantiate(player.bloodEffects[i], c.ClosestPointOnBounds(player.inv.equipedItems[0].transform.position), Quaternion.identity);
-					blood.SetActive(true);
-					player.slashSounds[Random.Range(0, player.slashSounds.Length)].Play();
-					e.hp -= player.st.finalDamage(e) + ist.finalDamage(e);
-					if (e.hp <= 0)
-						e.hp = 0;
+					if (player.st.hitChance(e))
+					{
+						i = Random.Range(0, player.bloodEffects.Length);
+						GameObject blood = (GameObject)Instantiate(player.bloodEffects[i], c.ClosestPointOnBounds(player.inv.equipedItems[0].transform.position), Quaternion.identity);
+						blood.SetActive(true);
+						player.slashSounds[Random.Range(0, player.slashSounds.Length)].Play();
+						e.hp -= player.st.finalDamage(e) + ist.finalDamage(e);
+						if (e.hp <= 0)
+							e.hp = 0;
+					}
 				}
 			}
 		}

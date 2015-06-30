@@ -303,10 +303,13 @@ public class inventory : MonoBehaviour
 							d.sprite = null;
 							d.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
 							equipedItems[id] = inventoryItems[i];
+							inventoryItems[i].transform.SetParent(null);
+							inventoryItems[i].SetActive(false);
 							inventoryItems[i] = null;
 							draggedFrom = null;
 							currentItemDragged = null;
 							dragged.SetActive(false);
+							equipItems();
 						}
 						else
 						{
@@ -323,9 +326,12 @@ public class inventory : MonoBehaviour
 							prev = inventoryItems[i];
 							inventoryItems[i] = equipedItems[id];
 							equipedItems[id] = prev;
+							inventoryItems[i].transform.SetParent(null);
+							inventoryItems[i].SetActive(false);
 							draggedFrom = null;
 							currentItemDragged = null;
 							dragged.SetActive(false);
+							equipItems();
 						}
 					}
 					else

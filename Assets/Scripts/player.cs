@@ -34,8 +34,12 @@ public class player : MonoBehaviour
 	public AudioSource[]			slashSounds;
 	public GameObject[]				bloodEffects;
 
+	public AudioSource[]			swooshSounds;
+	public bool						swooshing;
+
 	void Start()
 	{
+		swooshing = false;
 		setSpawners();
 		canLevelUp = false;
 		attacking = false;
@@ -68,19 +72,19 @@ public class player : MonoBehaviour
 		if (level == 1)
 		{
 			setSpawners();
-			transform.localPosition = new Vector3(71.52f, 56.19f, 45.28f);
+			transform.position = new Vector3(71.52f, 56.19f, 45.28f);
 			gameObject.GetComponent<NavMeshAgent>().enabled = true;
 		}
 		if (level == 2)
 		{
 			setSpawners();
-			transform.localPosition = new Vector3(199.99f, 0.55f, 16.03f);
+			transform.position = new Vector3(199.99f, 0.55f, 16.03f);
 			gameObject.GetComponent<NavMeshAgent>().enabled = true;
 		}
 		if (level == 3)
 		{
 			setSpawners();
-			transform.localPosition = new Vector3(98.6f, 0.55f, 2.15f);
+			transform.position = new Vector3(98.6f, 0.55f, 2.15f);
 			gameObject.GetComponent<NavMeshAgent>().enabled = true;
 		}
 	}
@@ -90,21 +94,13 @@ public class player : MonoBehaviour
 		int lvl = Application.loadedLevel;
 
 		if (lvl == 0)
-		{
-			transform.localPosition = new Vector3(210.16f, 15.29f, 67.14f);
-		}
+			transform.position = new Vector3(210.16f, 15.29f, 67.14f);
 		if (lvl == 1)
-		{
-			transform.localPosition = new Vector3(71.52f, 56.19f, 45.28f);
-		}
+			transform.position = new Vector3(71.52f, 56.19f, 45.28f);
 		if (lvl == 2)
-		{
-			transform.localPosition = new Vector3(199.99f, 0.55f, 16.03f);
-		}
+			transform.position = new Vector3(199.99f, 0.55f, 16.03f);
 		if (lvl == 3)
-		{
-			transform.localPosition = new Vector3(98.6f, 0.55f, 2.15f);
-		}
+			transform.position = new Vector3(98.6f, 0.55f, 2.15f);
 	}
 
 	void levelUpCheck()
@@ -363,8 +359,18 @@ public class player : MonoBehaviour
 	
 	void Update ()
 	{
+		int i;
+
 		if (!dead && nma.enabled)
 		{
+			if (swooshing)
+			{
+				i = Random.Range(0, swooshSounds.Length);
+				if (swooshSounds[i].isPlaying)
+					swooshSounds[i].Stop();
+				swooshSounds[i].Play();
+				swooshing = false;
+			}
 			_hits = Physics.RaycastAll(cam.ScreenPointToRay(Input.mousePosition), 400.0f);
 			getEnemyInfo(_hits);
 			if (nma.remainingDistance < 1.0f)

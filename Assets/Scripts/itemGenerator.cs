@@ -62,6 +62,26 @@ public class itemGenerator : MonoBehaviour
 		}
 	}
 
+	public GameObject tryGenerateItem(int item, Vector3 pos, int enemylvl, bool force)
+	{
+		if (Random.Range(0, 3) == 0 || force)
+		{
+			int id = Random.Range(0, sortedItems[item].Length);
+			GameObject go = sortedItems[item][id];
+			itemStats ist = go.GetComponent<itemStats>();
+			int ilvl = enemylvl + Random.Range(-1, 2);
+			if (ilvl < 1)
+				ilvl = 1;
+			ist.generate(ilvl);
+			Vector3 p = pos;
+			p.y += 1.0f;
+			GameObject igo = (GameObject)Instantiate(go, p, Quaternion.Euler(0.0f, 0.0f, (float)Random.Range(0, 360)));
+			igo.SetActive(true);
+			return (igo);
+		}
+		return (null);
+	}
+
 	public GameObject tryGenerateItem(Vector3 pos, int enemylvl, bool force)
 	{
 		if (Random.Range(0, 3) == 0 || force)
