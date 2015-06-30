@@ -3,6 +3,7 @@ using System.Collections;
 
 public class stats : MonoBehaviour
 {
+	public player		player = null;
 	public int			xp;
 	public int			level;
 	public int			money;
@@ -63,6 +64,26 @@ public class stats : MonoBehaviour
 
 	public int finalDamage(stats target)
 	{
+		int armor;
+
+		if (target.player != null)
+		{
+			Debug.Log("Je calcule l'armure");
+			armor = target.armor;
+			foreach (GameObject item in target.player.inv.equipedItems)
+			{
+				if (item != null)
+					armor += item.GetComponent<itemStats>().finalArmor;
+			}
+		}
+		else
+		{
+			armor = target.armor;
+		}
+		if (armor > 200)
+			armor = 200;
+		if (armor < 0)
+			armor = 0;
 		return (baseDamage() * (1 - target.armor / 200));
 	}
 

@@ -10,15 +10,14 @@ public class enemy : MonoBehaviour {
 	public Animator					anim;
 	public bool						attacking;
 	public AnimationState			animState;
-	public float					attackRate;
-	public float					elapsedAttackTime;
 	public player					player;
 	public spawner					spawn;
 	public GameObject				lifePotion;
+	public bool						canDmg;
 
 	// Use this for initialization
 	void Start () {
-		elapsedAttackTime = 0.0f;
+		canDmg = false;
 	}
 
 	public void move(GameObject target)
@@ -72,7 +71,7 @@ public class enemy : MonoBehaviour {
 	void Update () {
 		if (!dead)
 		{
-			if (attacking && elapsedAttackTime > attackRate)
+			if (attacking && canDmg)
 			{
 				if (st.hitChance(player.st))
 				{
@@ -80,9 +79,8 @@ public class enemy : MonoBehaviour {
 					if (player.st.hp <= 0)
 						player.st.hp = 0;
 				}
-				elapsedAttackTime = 0.0f;
+				canDmg = false;
 			}
-			elapsedAttackTime += Time.deltaTime;
 			if (st.hp <= 0)
 			{
 				st.hp = 0;

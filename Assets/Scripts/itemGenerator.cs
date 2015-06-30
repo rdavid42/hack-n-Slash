@@ -12,11 +12,13 @@ public class itemGenerator : MonoBehaviour
 	{
 		int		i;
 
+		itemCount = gameObject.transform.childCount;
 		items = new GameObject[itemCount];
 		i = 0;
 		foreach (Transform child in transform)
 		{
 			items[i] = child.gameObject;
+			items[i].GetComponent<itemStats>().size = (int)((items[i].GetComponent<CapsuleCollider>().height / 2.0f) * 100.0f);
 			i++;
 		}
 	}
@@ -25,10 +27,10 @@ public class itemGenerator : MonoBehaviour
 	{
 		if (Random.Range(0, 3) == 0 || force)
 		{
-			int id = Random.Range(0, items.Length - 1);
+			int id = Random.Range(0, items.Length);
 			GameObject go = items[id];
 			itemStats ist = go.GetComponent<itemStats>();
-			int ilvl = enemylvl + Random.Range(-2, 3);
+			int ilvl = enemylvl + Random.Range(-1, 2);
 			if (ilvl < 1)
 				ilvl = 1;
 			ist.generate(ilvl);
