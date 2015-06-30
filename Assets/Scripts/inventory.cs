@@ -195,6 +195,21 @@ public class inventory : MonoBehaviour
 			player.ui.disableItemPanel();
 	}
 
+	private void resetDrag()
+	{
+		Image c, d;
+
+		d = dragged.GetComponent<Image>();
+		c = draggedFrom.transform.GetChild(0).gameObject.GetComponent<Image>();
+		c.sprite = d.sprite;
+		c.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+		d.sprite = null;
+		d.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+		draggedFrom = null;
+		currentItemDragged = null;
+		dragged.SetActive(false);
+	}
+
 	// Update is called once per frame
 	void Update()
 	{
@@ -272,6 +287,50 @@ public class inventory : MonoBehaviour
 						}
 					}
 				}
+				else if (insideEquiped != null)
+				{
+					id = findEquipedId(insideEquiped);
+					ist = inventoryItems[findSlotId(draggedFrom)].GetComponent<itemStats>();
+					if (id == ist.type)
+					{
+						if (equipedItems[id] == null)
+						{
+							i = findSlotId(draggedFrom);
+							d = dragged.GetComponent<Image>();
+							c = insideEquiped.transform.GetChild(0).gameObject.GetComponent<Image>();
+							c.sprite = d.sprite;
+							c.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+							d.sprite = null;
+							d.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+							equipedItems[id] = inventoryItems[i];
+							inventoryItems[i] = null;
+							draggedFrom = null;
+							currentItemDragged = null;
+							dragged.SetActive(false);
+						}
+						else
+						{
+							i = findSlotId(draggedFrom);
+							d = dragged.GetComponent<Image>();
+							c = insideEquiped.transform.GetChild(0).gameObject.GetComponent<Image>();
+							p = draggedFrom.transform.GetChild(0).gameObject.GetComponent<Image>();
+							p.sprite = c.sprite;
+							p.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+							c.sprite = d.sprite;
+							c.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+							d.sprite = null;
+							d.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+							prev = inventoryItems[i];
+							inventoryItems[i] = equipedItems[id];
+							equipedItems[id] = prev;
+							draggedFrom = null;
+							currentItemDragged = null;
+							dragged.SetActive(false);
+						}
+					}
+					else
+						resetDrag();
+				}
 				else
 				{
 					if (dropItem)
@@ -299,17 +358,7 @@ public class inventory : MonoBehaviour
 						}
 					}
 					else
-					{
-						d = dragged.GetComponent<Image>();
-						c = draggedFrom.transform.GetChild(0).gameObject.GetComponent<Image>();
-						c.sprite = d.sprite;
-						c.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-						d.sprite = null;
-						d.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-						draggedFrom = null;
-						currentItemDragged = null;
-						dragged.SetActive(false);
-					}
+						resetDrag();
 				}
 			}
 		}
