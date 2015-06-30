@@ -9,6 +9,7 @@ public class itemStats : MonoBehaviour
 	public int				typeBaseMaxDmg;
 	public float			speed;
 	public int				armor;
+
 	public string			name;
 	// generator
 	public int				ilvl;
@@ -58,12 +59,12 @@ public class itemStats : MonoBehaviour
 			qualitybonusDmg = 1;
 			qualityPrefix = "Uncommon";
 		}
-		else if (quality >= 80 && quality < 100)
+		else if (quality >= 80 && quality < 99)
 		{
 			qualitybonusDmg = 3;
 			qualityPrefix = "Enchanted";
 		}
-		else if (quality == 100)
+		else if (quality == 99)
 		{
 			qualitybonusDmg = 8;
 			qualityPrefix = "Rare";

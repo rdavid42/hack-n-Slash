@@ -3,23 +3,62 @@ using System.Collections;
 
 public class itemGenerator : MonoBehaviour
 {
-	public int					itemCount;
+	public enum Items
+	{
+		weapon = 0,
+		shield
+	}
+	public int					itemTypeCount;
 	public player				player;
 	public GameObject[]			items;
+	public GameObject[][]		sortedItems;
+	public int					itemCount;
+	public int[]				itemCounts;
 
 	// Use this for initialization
 	void Start()
 	{
-		int		i;
+		int i;
+		itemStats it;
+		int[] tmpCounts;
 
+		itemTypeCount = Items.GetNames(typeof(Items)).Length;
 		itemCount = gameObject.transform.childCount;
 		items = new GameObject[itemCount];
 		i = 0;
+		// Get items
 		foreach (Transform child in transform)
 		{
 			items[i] = child.gameObject;
-			items[i].GetComponent<itemStats>().size = (int)((items[i].GetComponent<CapsuleCollider>().height / 2.0f) * 100.0f);
+			it = items[i].GetComponent<itemStats>();
+			it.size = (int)((items[i].GetComponent<CapsuleCollider>().height / 2.0f) * 100.0f);
 			i++;
+		}
+		// get number of each item type
+		itemCounts = new int[itemTypeCount];
+		for (i = 0; i < itemTypeCount; ++i)
+			itemCounts[i] = 0;
+		i = 0;
+		foreach (GameObject item in items)
+		{
+			itemCounts[items[i].GetComponent<itemStats>().type]++;
+			i++;
+		}
+		// Sort all items by type
+		i = 0;
+		sortedItems = new GameObject[itemTypeCount][];
+		for (i = 0; i < itemTypeCount; ++i)
+		{
+			sortedItems[i] = new GameObject[itemCounts[i]];
+		}
+		tmpCounts = new int[itemTypeCount];
+		for (i = 0; i < itemTypeCount; ++i)
+			tmpCounts[i] = 0;
+		foreach (GameObject item in items)
+		{
+			it = item.GetComponent<itemStats>();
+			sortedItems[it.type][tmpCounts[it.type]] = item;
+			tmpCounts[it.type]++;
 		}
 	}
 

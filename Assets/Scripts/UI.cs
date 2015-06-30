@@ -178,7 +178,10 @@ public class UI : MonoBehaviour {
 		else if (item.type == 1)
 		{
 			// handle shield
-			tItemStats.text += "armor: " + item.finalArmor.ToString() + "\n";
+			if (item.qualitybonusDmg > 0)
+				tItemStats.text += "armor: " + item.armor.ToString() + " +" + item.qualitybonusDmg + " (" + item.finalArmor + ")" + "\n";
+			else
+				tItemStats.text += "armor: " + item.armor.ToString() + "\n";
 		}
 	}
 
