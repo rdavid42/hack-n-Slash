@@ -65,7 +65,6 @@ public class inventory : MonoBehaviour
 			equipedSlots[i] = child.gameObject;
 			i++;
 		}
-		DontDestroyOnLoad(gameObject);
 	}
 	
 	private int findSlotId(GameObject item)
@@ -294,6 +293,8 @@ public class inventory : MonoBehaviour
 							drop.transform.GetChild(1).gameObject.SetActive(true);
 							drop.SetActive(true);
 							inventoryItems[i] = null;
+							draggedFrom = null;
+							currentItemDragged = null;
 							dropItem = false;
 						}
 					}
