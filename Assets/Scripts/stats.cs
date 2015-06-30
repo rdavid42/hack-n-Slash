@@ -68,7 +68,6 @@ public class stats : MonoBehaviour
 
 		if (target.player != null)
 		{
-			Debug.Log("Je calcule l'armure");
 			armor = target.armor;
 			foreach (GameObject item in target.player.inv.equipedItems)
 			{
