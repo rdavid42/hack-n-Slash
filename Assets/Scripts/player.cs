@@ -246,11 +246,14 @@ public class player : MonoBehaviour
 
 	void attack(Vector3 pos)
 	{
-		anim.speed = inv.equipedItems[0].GetComponent<itemStats>().speed;
-		transform.LookAt(pos);
-		attacking = true;
-		moveAnim(false);
-		attackAnim1(true);
+		if (inv.equipedItems[0] != null)
+			anim.speed = inv.equipedItems[0].GetComponent<itemStats>().speed;
+		else
+			anim.speed = 1.0f;
+			transform.LookAt(pos);
+			attacking = true;
+			moveAnim(false);
+			attackAnim1(true);
 	}
 
 	void stopAttack()

@@ -166,13 +166,14 @@ public class UI : MonoBehaviour {
 		if (item.type == 0)
 		{
 			// handle weapon
-			tItemStats.text += "dmg: " + item.finalMinDmg.ToString() + " - " + item.finalMaxDmg.ToString();
+			tItemStats.text += "dmg : " + item.finalMinDmg.ToString() + " - " + item.finalMaxDmg.ToString();
 			if (item.qualitybonusDmg > 0)
 				tItemStats.text += " +" + item.qualitybonusDmg.ToString() + "\n";
 			else
 				tItemStats.text += "\n";
-			tItemStats.text += "aps: " + item.speed.ToString() + "\n";
-			tItemStats.text += "dps: " + item.estimatedDps.ToString() + "\n";
+			tItemStats.text += "aps  : " + item.speed.ToString() + "\n";
+			tItemStats.text += "dps  : " + item.estimatedDps.ToString() + "\n";
+			tItemStats.text += "size : " + item.size.ToString() + " cm" + "\n";
 		}
 		else if (item.type == 1)
 		{
@@ -195,13 +196,20 @@ public class UI : MonoBehaviour {
 	{
 		itemStats	item;
 		int			dps;
+		int			armor;
 
 		if (statPanel.activeSelf)
 		{
 			statStr.text = player.st.strength.ToString();
 			statAgi.text = player.st.agility.ToString();
 			statCst.text = player.st.constitution.ToString();
-			statArm.text = player.st.armor.ToString();
+			armor = player.st.armor;
+			foreach (GameObject it in player.inv.equipedItems)
+			{
+				if (it != null)
+					armor += it.GetComponent<itemStats>().finalArmor;
+			}
+			statArm.text = armor.ToString();
 			statDmg.text = player.st.minDamage.ToString() + "-" + player.st.maxDamage.ToString();
 			statMaxHp.text = player.st.maxHp.ToString();
 			statXp.text = player.st.xp.ToString();

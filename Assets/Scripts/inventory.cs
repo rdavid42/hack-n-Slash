@@ -186,7 +186,7 @@ public class inventory : MonoBehaviour
 		else if (insideEquiped != null)
 		{
 			i = findEquipedId(insideEquiped);
-			if (equipedItems[i])
+			if (equipedItems[i] != null)
 				player.ui.showItemPanel(equipedItems[i].GetComponent<itemStats>());
 			else
 				player.ui.disableItemPanel();
