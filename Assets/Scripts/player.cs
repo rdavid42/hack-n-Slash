@@ -177,7 +177,7 @@ public class player : MonoBehaviour
 		if (_target != null)
 		{
 			enemy e = _target.GetComponent<enemy>();
-			if (e)
+			if (e != null)
 			{
 				ui.enableEnemyPanel();
 				ui.updateEnemyInfo(e);
@@ -220,14 +220,24 @@ public class player : MonoBehaviour
 	void OnTriggerStay(Collider c)
 	{
 		if (c.gameObject.tag == "enemyTrigger")
+		{
 			canAttack = true;
+			if (_target != null)
+			{
+				if (_target != c.transform.parent.gameObject)
+					canAttack = false;
+			}
+		}
 		if (c.gameObject.tag == "itemPickUp" && c.gameObject.transform.parent.gameObject == _pickUpTarget)
 		{
 			inv.addItem(c.gameObject.transform.parent.gameObject);
 			_pickUpTarget = null;
 		}
 		if (Input.GetMouseButton(0) && c.gameObject == _target)
+		{
+			stop();
 			attack(_target.transform.position);
+		}
 	}
 
 	void moveAnim(bool state)
@@ -246,16 +256,15 @@ public class player : MonoBehaviour
 			anim.speed = inv.equipedItems[0].GetComponent<itemStats>().speed;
 		else
 			anim.speed = 1.0f;
-			transform.LookAt(pos);
-			attacking = true;
-			moveAnim(false);
-			attackAnim1(true);
+		transform.LookAt(pos);
+		attacking = true;
+		moveAnim(false);
+		attackAnim1(true);
 	}
 
 	void stopAttack()
 	{
 		anim.speed = 1.0f;
-		_target = null;
 		canAttack = false;
 		attacking = false;
 		attackAnim1(false);
@@ -279,12 +288,20 @@ public class player : MonoBehaviour
 	{
 		foreach (RaycastHit hit in hits)
 		{
-			if (hit.collider.gameObject.tag == "terrain" && !ui.overButton)
+			if (!ui.overButton)
 			{
-				stopAttack();
-				moveAnim(true);
-				nma.destination = hit.point;
-				return (true);
+				if (hit.collider.gameObject.tag == "enemyTrigger")
+				{
+					if (!hit.collider.transform.parent.gameObject.GetComponent<enemy>().dead)
+						_target = hit.collider.transform.parent.gameObject;
+				}
+				else if (hit.collider.gameObject.tag == "terrain")
+				{
+					stopAttack();
+					moveAnim(true);
+					nma.destination = hit.point;
+					return (true);
+				}
 			}
 		}
 		return (false);
@@ -292,18 +309,43 @@ public class player : MonoBehaviour
 	
 	bool tryAttack(RaycastHit[] hits)
 	{
+		itemStats weapon = null;
+
+		if (inv.equipedItems[0])
+			 weapon = inv.equipedItems[0].GetComponent<itemStats>();
 		foreach (RaycastHit hit in hits)
 		{
 			if (hit.collider.gameObject.tag == "enemyTrigger")
 			{
-				_target = hit.collider.gameObject;
-				if (canAttack)
-					attack(hit.collider.gameObject.transform.position);
-				return (true);
+				if (weapon != null && Vector3.Distance(hit.collider.transform.position, transform.position) <= ((float)weapon.size * 2.0f / 100.0f))
+				{
+					stop();
+					_target = hit.collider.gameObject;
+					if (canAttack)
+					{
+						Debug.Log("Attacking2");
+						attack(hit.collider.gameObject.transform.position);
+					}
+					return (true);
+				}
 			}
 		}
 		attacking = false;
 		attackAnim1(false);
+		return (false);
+	}
+
+	bool tryTarget(RaycastHit[] hits)
+	{
+		foreach (RaycastHit hit in hits)
+		{
+			if (hit.collider.gameObject.tag == "enemyTrigger")
+			{
+				if (!hit.collider.transform.parent.gameObject.GetComponent<enemy>().dead)
+					_target = hit.collider.transform.parent.gameObject;
+				return (true);
+			}
+		}
 		return (false);
 	}
 
@@ -363,6 +405,8 @@ public class player : MonoBehaviour
 
 		if (!dead && nma.enabled)
 		{
+			if (_target != null && _target.GetComponent<enemy>().dead)
+				_target = null;
 			if (swooshing)
 			{
 				i = Random.Range(0, swooshSounds.Length);
@@ -378,12 +422,17 @@ public class player : MonoBehaviour
 			levelUpCheck();
 			if (Input.GetMouseButton(0))
 			{
-				if (_target != null)
+				if (_target != null || tryTarget(_hits))
 				{
 					if (canAttack)
+					{
+						stop();
+						Debug.Log("Attacking1");
 						attack(_target.transform.position);
+					}
 					else
 					{
+						stopAttack();
 						moveAnim(true);
 						nma.destination = _target.transform.position;
 					}
