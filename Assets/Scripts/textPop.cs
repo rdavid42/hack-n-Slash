@@ -3,36 +3,34 @@ using System.Collections;
 
 public class textPop : MonoBehaviour
 {
-	public TextMesh			text;
+	public TextMesh			textMesh;
 	public float			elapsedTime;
 	public float			lifeTime;
 	public Vector3			direction;
 	public float			velocity;
-	public float			velocityOverLifetime;
+	public bool				moving;
 
 	// Use this for initialization
 	void Start()
 	{
-		text = gameObject.GetComponent<TextMesh>();
-		text.color = new Color(1.0f, 1.0f, 1.0f);
-		text.characterSize = 0.2f;
-		transform.position = new Vector3(0.0f, 0.0f, 0.0f);
-		transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
 		elapsedTime = 0.0f;
 	}
-	
-	public void config(Vector3 position, Color color, float characterSize, float lifetime)
+
+	public void addConfig(string text)
 	{
-		text.color = color;
-		text.characterSize = characterSize;
-		this.lifeTime = lifeTime;
-		this.direction = direction;
-		transform.position = position;
+		textMesh.text = text;
 	}
 
-	public void config(Vector3 direction, float velocity, Vector3 eulerAngles)
+	public void addConfig(Color color, float characterSize, float lifeTime)
 	{
-		transform.eulerAngles = eulerAngles;
+		textMesh.color = color;
+		textMesh.characterSize = characterSize;
+		this.lifeTime = lifeTime;
+	}
+
+	public void addConfig(Vector3 direction, float velocity)
+	{
+		moving = true;
 		this.direction = direction;
 		this.velocity = velocity;
 	}
@@ -41,6 +39,13 @@ public class textPop : MonoBehaviour
 	{
 		if (elapsedTime > lifeTime)
 			Destroy(gameObject);
+		if (moving)
+		{
+			transform.position = new Vector3(transform.position.x + velocity * direction.x * Time.deltaTime,
+			                                 transform.position.y + velocity * direction.y * Time.deltaTime,
+			                                 transform.position.z + velocity * direction.z * Time.deltaTime);
+			textMesh.color = new Color(textMesh.color.r, textMesh.color.g, textMesh.color.b, textMesh.color.a - (elapsedTime / lifeTime));
+		}
 		elapsedTime += Time.deltaTime;
 	}
 }

@@ -15,7 +15,6 @@ public class meleeAttack : MonoBehaviour {
 	{
 		int			i;
 		GameObject	tmp;
-		textPop		tp;
 
 		if (c.gameObject.tag == "enemy" && player != null && player.attacking)
 		{
@@ -31,16 +30,29 @@ public class meleeAttack : MonoBehaviour {
 						tmp = (GameObject)Instantiate(player.bloodEffects[i], c.ClosestPointOnBounds(player.inv.equipedItems[0].transform.position), Quaternion.identity);
 						tmp.SetActive(true);
 						player.slashSounds[Random.Range(0, player.slashSounds.Length)].Play();
-						e.hp -= player.st.finalDamage(e) + ist.finalDamage(e);
+						int dmg = player.st.finalDamage(e) + ist.finalDamage(e);
+						e.hp -= dmg;
 						if (e.hp <= 0)
 							e.hp = 0;
+						tmp = (GameObject)Instantiate(player.textPop, c.ClosestPointOnBounds(player.inv.equipedItems[0].transform.position), Quaternion.identity);
+						tmp.SetActive(true);
+						tmp.transform.LookAt(player.cam.transform.position);
+						tmp.transform.eulerAngles = new Vector3(tmp.transform.eulerAngles.x, tmp.transform.eulerAngles.y + 180, tmp.transform.eulerAngles.z);
+						textPop tp = tmp.GetComponent<textPop>();
+						tp.addConfig(dmg.ToString());
+						tp.addConfig(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.2f, 20.0f);
+						tp.addConfig(new Vector3(0.0f, 1.0f, 0.0f), 2.0f);
 					}
 					else
 					{
 						tmp = (GameObject)Instantiate(player.textPop, c.ClosestPointOnBounds(player.inv.equipedItems[0].transform.position), Quaternion.identity);
 						tmp.SetActive(true);
-						tp = tmp.GetComponent<textPop>();
-//						tp.config(
+						tmp.transform.LookAt(player.cam.transform.position);
+						tmp.transform.eulerAngles = new Vector3(tmp.transform.eulerAngles.x, tmp.transform.eulerAngles.y + 180, tmp.transform.eulerAngles.z);
+						textPop tp = tmp.GetComponent<textPop>();
+						tp.addConfig("miss");
+						tp.addConfig(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.2f, 20.0f);
+						tp.addConfig(new Vector3(0.0f, 1.0f, 0.0f), 2.0f);
 					}
 				}
 			}

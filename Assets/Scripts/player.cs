@@ -30,6 +30,7 @@ public class player : MonoBehaviour
 	public static bool				cheatsEnabled = true;
 
 	public ParticleSystem			pLevelUp;
+	public ParticleSystem			pLifeGlobe;
 
 	public AudioSource[]			slashSounds;
 	public GameObject[]				bloodEffects;
@@ -429,7 +430,6 @@ public class player : MonoBehaviour
 					if (canAttack)
 					{
 						stop();
-						Debug.Log("Attacking1");
 						attack(_target.transform.position);
 					}
 					else
