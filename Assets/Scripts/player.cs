@@ -37,6 +37,8 @@ public class player : MonoBehaviour
 	public AudioSource[]			swooshSounds;
 	public bool						swooshing;
 
+	public GameObject				textPop;
+
 	void Start()
 	{
 		swooshing = false;
