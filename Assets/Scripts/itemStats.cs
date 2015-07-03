@@ -25,6 +25,11 @@ public class itemStats : MonoBehaviour
 	public string			finalName;
 	public string			description;
 
+	// bonuses
+	public int				attackSpeed;
+	public int				bonusDmgPercent;
+	public int				bonusDmgRaw;
+
 	// Use this for initialization
 	void Start()
 	{
