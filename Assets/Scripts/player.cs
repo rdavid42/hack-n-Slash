@@ -423,6 +423,12 @@ public class player : MonoBehaviour
 			if (nma.remainingDistance < 1.0f)
 				stop();
 			levelUpCheck();
+			if (Input.GetMouseButtonDown(0))
+			{
+				tryPickUp(_hits);
+				if (!tryTarget(_hits))
+					_target = null;
+			}
 			if (Input.GetMouseButton(0))
 			{
 				if (_target != null || tryTarget(_hits))
@@ -445,8 +451,6 @@ public class player : MonoBehaviour
 						tryMove(_hits);
 				}
 			}
-			if (Input.GetMouseButtonDown(0))
-				tryPickUp(_hits);
 			if (Input.GetMouseButtonUp(0))
 				stopAttack();
 			if (st.hp <= 0)

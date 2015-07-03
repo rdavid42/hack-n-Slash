@@ -40,7 +40,7 @@ public class meleeAttack : MonoBehaviour {
 						tmp.transform.eulerAngles = new Vector3(tmp.transform.eulerAngles.x, tmp.transform.eulerAngles.y + 180, tmp.transform.eulerAngles.z);
 						textPop tp = tmp.GetComponent<textPop>();
 						tp.addConfig(dmg.ToString());
-						tp.addConfig(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.2f, 20.0f);
+						tp.addConfig(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.25f, 20.0f);
 						tp.addConfig(new Vector3(0.0f, 1.0f, 0.0f), 2.0f);
 					}
 					else
@@ -51,7 +51,7 @@ public class meleeAttack : MonoBehaviour {
 						tmp.transform.eulerAngles = new Vector3(tmp.transform.eulerAngles.x, tmp.transform.eulerAngles.y + 180, tmp.transform.eulerAngles.z);
 						textPop tp = tmp.GetComponent<textPop>();
 						tp.addConfig("miss");
-						tp.addConfig(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.2f, 20.0f);
+						tp.addConfig(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.25f, 20.0f);
 						tp.addConfig(new Vector3(0.0f, 1.0f, 0.0f), 2.0f);
 					}
 				}
